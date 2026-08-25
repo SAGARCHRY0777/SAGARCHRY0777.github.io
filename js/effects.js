@@ -22,29 +22,47 @@ export function initFit() {
   if (!lines.length) return;
 
   const fit = () => {
+    // Lines that share a parent are sized together. Fitting each line to the
+    // container independently makes a five-letter line larger than a
+    // nine-letter one, which reads as a mistake rather than as a style —
+    // so the group takes the smallest size any of its lines needs.
+    const groups = new Map();
     lines.forEach((el) => {
       const box = el.parentElement;
       if (!box) return;
+      if (!groups.has(box)) groups.set(box, []);
+      groups.get(box).push(el);
+    });
+
+    groups.forEach((els, box) => {
+      let smallest = Infinity;
+
+      els.forEach((el) => {
       // Measure against the viewport, never against a box the name's own
       // overflow may have widened — otherwise a wider font swapping in
       // re-fits to the overflow and the page locks wider than the screen.
-      const left = box.getBoundingClientRect().left;
-      const available = document.documentElement.clientWidth - left - left;
-      const target = Math.min(box.clientWidth, Math.max(120, available));
-      if (!target) return;
+        const box2 = el.parentElement;
+        const left = box2.getBoundingClientRect().left;
+        const available = document.documentElement.clientWidth - left - left;
+        const target = Math.min(box.clientWidth, Math.max(120, available));
+        if (!target) return;
 
       // Measure at a known size, then scale linearly — one reflow, not a
       // binary search. The element is width:max-content in CSS, so offsetWidth
       // is the intrinsic width of the text rather than the container's.
-      el.style.fontSize = '100px';
-      el.style.whiteSpace = 'nowrap';
-      const natural = el.offsetWidth;
-      if (!natural) return;
+        el.style.fontSize = '100px';
+        el.style.whiteSpace = 'nowrap';
+        const natural = el.offsetWidth;
+        if (!natural) return;
 
-      const max = Number(el.dataset.fitMax || 210);
-      const min = Number(el.dataset.fitMin || 34);
-      const size = clamp((target / natural) * 100, min, max);
-      el.style.fontSize = `${size.toFixed(2)}px`;
+        const max = Number(el.dataset.fitMax || 210);
+        const min = Number(el.dataset.fitMin || 34);
+        smallest = Math.min(smallest, clamp((target / natural) * 100, min, max));
+      });
+
+      if (Number.isFinite(smallest)) {
+        els.forEach((el) => { el.style.fontSize = `${smallest.toFixed(2)}px`; });
+      }
     });
   };
 

@@ -814,3 +814,18 @@
   max-width: none;
 }
 [data-fit] .msk { display: block; }
+
+/* ----------------------------------------------------------------------------
+   VARIABLE-WIDTH LETTERS
+   Archivo carries a width axis, so the name can deflect toward the pointer
+   without changing colour or position. Widths are normalised around their
+   mean in nametype.js, so the line does not grow as letters widen.
+   -------------------------------------------------------------------------- */
+.ch {
+  font-weight: inherit;
+  font-stretch: 118%;
+  will-change: font-stretch;
+}
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .ch { will-change: auto; }
+}

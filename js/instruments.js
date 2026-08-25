@@ -119,8 +119,10 @@ export function initAnnunciator() {
 // ---------------------------------------------------------------------------
 // 3. SELF-TELEMETRY HUD
 //    The page reports its own vitals the way its subject monitors production:
-//    frame rate (EMA), long tasks, DOM size — and runtime transfer, which
-//    stays at zero because the page makes no network calls after load.
+//    frame rate (EMA), long tasks, DOM size — and runtime transfer, which is
+//    measured rather than claimed. It reads a few hundred bytes when the visit
+//    counter reports in, and zero after that, because nothing else on this
+//    page talks to the network.
 // ---------------------------------------------------------------------------
 export function initSelfTelemetry() {
   const host = $('[data-selftel]');
@@ -130,12 +132,29 @@ export function initSelfTelemetry() {
     <div class="stat"><div class="stat__v" data-tel="fps">—</div><div class="label">Scan rate</div></div>
     <div class="stat"><div class="stat__v" data-tel="long">0</div><div class="label">Long tasks</div></div>
     <div class="stat"><div class="stat__v" data-tel="dom">—</div><div class="label">DOM nodes</div></div>
-    <div class="stat"><div class="stat__v" data-tel="net">0 B</div><div class="label">Runtime transfer</div></div>`;
+    <div class="stat"><div class="stat__v" data-tel="net">0 B</div><div class="label">Runtime transfer</div></div>
+    <div class="stat"><div class="stat__v" data-tel="dwell">0:00</div><div class="label">Time on page</div></div>`;
 
   const elFps  = $('[data-tel="fps"]', host);
   const elLong = $('[data-tel="long"]', host);
   const elDom  = $('[data-tel="dom"]', host);
   const elNet  = $('[data-tel="net"]', host);
+  const elDwell = $('[data-tel="dwell"]', host);
+
+  // Time on page, counting only while the tab is actually in front — a
+  // backgrounded tab is not a reader.
+  const dwell = { ms: 0, since: document.hidden ? 0 : performance.now() };
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (dwell.since) dwell.ms += performance.now() - dwell.since;
+      dwell.since = 0;
+    } else {
+      dwell.since = performance.now();
+    }
+  });
+  const dwellSeconds = () =>
+    Math.floor((dwell.ms + (dwell.since ? performance.now() - dwell.since : 0)) / 1000);
+  const clockText = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   // long tasks --------------------------------------------------------------
   let longCount = 0;
@@ -163,6 +182,7 @@ export function initSelfTelemetry() {
   if (reduced()) {
     elFps.textContent = 'static';
     elDom.textContent = String(document.getElementsByTagName('*').length);
+    setInterval(() => { elDwell.textContent = clockText(dwellSeconds()); }, 1000);
     return;
   }
 
@@ -177,7 +197,11 @@ export function initSelfTelemetry() {
     elLong.textContent = String(longCount);
     elDom.textContent = String(document.getElementsByTagName('*').length);
     elNet.textContent = fmt(runtimeBytes());
+    elDwell.textContent = clockText(dwellSeconds());
   });
+
+  // expose it so the visit counter can report the bucket on the way out
+  window.__scDwell = dwellSeconds;
 }
 
 export function initInstruments() {

@@ -25,6 +25,8 @@ import { initBench } from './bench.js';
 import { initArchive } from './archive.js';
 import { initHistorian } from './historian.js';
 import { initInstruments } from './instruments.js';
+import { initVisits } from './visits.js';
+import { initNameType } from './nametype.js';
 
 function splitHeadlines() {
   $$('[data-split]').forEach((el) => {
@@ -55,11 +57,13 @@ function boot() {
   initPatchbay();
   initHistorian();
   initInstruments();
+  initVisits();
 
   document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
   // effects run last: fit measures type, so the DOM must be final
   initEffects();
+  initNameType();   // after fit, so the letters are measured at final size
 
   initPreloader(() => {
     // hero reveal is released by the boot sequence, not by the observer

@@ -66,6 +66,35 @@ async function show(code, host) {
   }
 }
 
+/**
+ * Report how long the visit lasted, as a GoatCounter EVENT.
+ *
+ * Aggregate retention is not something GoatCounter measures on its own, so
+ * the page reports it: on the way out, the dwell time is put in a coarse
+ * bucket and sent as an event. Buckets rather than exact seconds, because a
+ * dashboard row per second is noise, and because a coarse figure cannot
+ * identify anybody. It rides on `sendBeacon`, which survives the unload that
+ * a normal request would not.
+ */
+function reportDwell(code) {
+  const seconds = typeof window.__scDwell === 'function' ? window.__scDwell() : 0;
+  if (!seconds) return;
+
+  const bucket =
+    seconds < 10   ? 'bounce-under-10s' :
+    seconds < 30   ? '10-30s'  :
+    seconds < 60   ? '30-60s'  :
+    seconds < 180  ? '1-3min'  :
+    seconds < 600  ? '3-10min' : 'over-10min';
+
+  const q = new URLSearchParams({ p: `dwell/${bucket}`, e: 'true', t: `Dwell ${bucket}` });
+  const url = `${origin(code)}/count?${q}`;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(url);
+    else fetch(url, { mode: 'no-cors', keepalive: true }).catch(() => {});
+  } catch { /* the visit still counted; only the duration is lost */ }
+}
+
 export function initVisits() {
   const host = $('[data-visits]');
   if (!host) return;
@@ -77,4 +106,11 @@ export function initVisits() {
 
   record(CODE);
   show(CODE, host);
+
+  // pagehide fires where unload is unreliable (bfcache, mobile Safari);
+  // the hidden-visibility path covers tab switches that never come back
+  let reported = false;
+  const once = () => { if (!reported) { reported = true; reportDwell(CODE); } };
+  addEventListener('pagehide', once);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) once(); });
 }

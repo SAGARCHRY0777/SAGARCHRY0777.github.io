@@ -293,7 +293,8 @@
   overflow: hidden;
   background: var(--panel);
 }
-@media (min-width: 640px) { .selftel { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 640px)  { .selftel { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .selftel { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
 /* ============================================================================
    PRINT — the site degrades into an equipment datasheet.
