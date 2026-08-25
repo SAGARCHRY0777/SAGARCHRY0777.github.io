@@ -197,9 +197,11 @@ export function initPin() {
 
   const lines = $$('.pin__line', pin);
   const bar   = $('.pin__progress i', pin);
+  const stage = $('.pin__stage', pin);
   if (!lines.length) return;
 
   let current = -1;
+  let unpinned = false;
 
   onTick(() => {
     const r = pin.getBoundingClientRect();
@@ -207,6 +209,21 @@ export function initPin() {
     if (travel <= 0) return;
 
     const p = clamp(-r.top / travel);
+
+    // Sticky can be defeated silently — an ancestor that has quietly become a
+    // scroll container is enough. If the stage is not holding near the top
+    // while we are in the middle of the pin, stop pretending: unpin, and show
+    // every line at once. A visitor must never meet a blank screen because a
+    // layout trick did not take.
+    if (!unpinned && stage && p > 0.12 && p < 0.88) {
+      if (Math.abs(stage.getBoundingClientRect().top) > 80) {
+        unpinned = true;
+        pin.classList.add('is-unpinned');
+        lines.forEach((l) => l.classList.remove('is-past'));
+        return;
+      }
+    }
+    if (unpinned) return;
     if (bar) bar.style.transform = `scaleX(${p.toFixed(4)})`;
 
     // hold the first and last line a little longer than the middle ones

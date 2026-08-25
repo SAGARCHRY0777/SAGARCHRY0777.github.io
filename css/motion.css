@@ -273,6 +273,23 @@ body.cursor-hot .cur { opacity: 0; }
 .pin__line.is-on { opacity: 1; transform: none; filter: blur(0); }
 .pin__line.is-past { opacity: 0; transform: translateY(-38px); filter: blur(9px); }
 
+/* Fallback when position: sticky is not honoured — see initPin. The section
+   becomes an ordinary stack of statements: less cinematic, always readable. */
+.pin.is-unpinned { height: auto !important; }
+.pin.is-unpinned .pin__stage { position: static; height: auto; }
+.pin.is-unpinned .pin__lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+.pin.is-unpinned .pin__line {
+  grid-area: auto;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+.pin.is-unpinned .pin__progress { display: none; }
+
 .pin__progress {
   position: absolute;
   left: var(--gutter);

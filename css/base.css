@@ -30,8 +30,15 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
   text-rendering: optimizeLegibility;
+
+  /* NOT overflow-x: hidden. Once <html> carries a non-visible overflow (it
+     has overflow-x: clip above), the body stops propagating its overflow to
+     the viewport and becomes a scroll container in its own right. That breaks
+     every position: sticky inside it — which is what unpinned the thesis
+     section — and detaches window.scrollY from the document.
+     `clip` never creates a scroll container, so it is safe here. */
+  overflow-x: clip;
 }
 
 body.is-locked { overflow: hidden; }
