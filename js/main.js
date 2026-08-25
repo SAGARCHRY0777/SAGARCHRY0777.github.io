@@ -19,7 +19,7 @@ import { initSignal } from './signal.js';
 import { initMarquees } from './marquee.js';
 import { initMatch } from './match.js';
 import { initQuery } from './query.js';
-import { initEffects } from './effects.js';
+import { initEffects, refit } from './effects.js';
 import { initPatchbay } from './patchbay.js';
 import { initBench } from './bench.js';
 import { initArchive } from './archive.js';
@@ -63,7 +63,8 @@ function boot() {
 
   // effects run last: fit measures type, so the DOM must be final
   initEffects();
-  initNameType();   // after fit, so the letters are measured at final size
+  initNameType();
+  refit();          // splitting letters drops their kerning, so measure again
 
   initPreloader(() => {
     // hero reveal is released by the boot sequence, not by the observer

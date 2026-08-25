@@ -41,6 +41,16 @@ body {
   overflow-x: clip;
 }
 
+/* Safari below 16 (iOS 15 and older) does not know `overflow: clip` at all,
+   so BOTH rules above are dropped and nothing contains horizontal overflow.
+   Restore the pre-clip arrangement there: with html's clip also ignored, the
+   body's `hidden` propagates up to the viewport, which contains the overflow
+   AND leaves position: sticky working — that combination was never the bug. */
+@supports not (overflow: clip) {
+  html { overflow-x: visible; }
+  body { overflow-x: hidden; }
+}
+
 body.is-locked { overflow: hidden; }
 
 img, svg, video, canvas { display: block; max-width: 100%; }

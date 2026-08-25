@@ -21,6 +21,15 @@ export function initFit() {
   const lines = $$('[data-fit]');
   if (!lines.length) return;
 
+  /** How wide this line is allowed to be, measured against the viewport. */
+  const fitTarget = (el) => {
+    const box = el.parentElement;
+    if (!box) return 0;
+    const left = box.getBoundingClientRect().left;
+    const available = document.documentElement.clientWidth - left - left;
+    return Math.min(box.clientWidth, Math.max(120, available));
+  };
+
   const fit = () => {
     // Lines that share a parent are sized together. Fitting each line to the
     // container independently makes a five-letter line larger than a
@@ -41,10 +50,7 @@ export function initFit() {
       // Measure against the viewport, never against a box the name's own
       // overflow may have widened — otherwise a wider font swapping in
       // re-fits to the overflow and the page locks wider than the screen.
-        const box2 = el.parentElement;
-        const left = box2.getBoundingClientRect().left;
-        const available = document.documentElement.clientWidth - left - left;
-        const target = Math.min(box.clientWidth, Math.max(120, available));
+        const target = fitTarget(el);
         if (!target) return;
 
       // Measure at a known size, then scale linearly — one reflow, not a
@@ -60,7 +66,23 @@ export function initFit() {
         smallest = Math.min(smallest, clamp((target / natural) * 100, min, max));
       });
 
-      if (Number.isFinite(smallest)) {
+      if (!Number.isFinite(smallest)) return;
+      els.forEach((el) => { el.style.fontSize = `${smallest.toFixed(2)}px`; });
+
+      // Verify, do not assume. The linear solve above is right for the text it
+      // measured, but the text can get wider afterwards — splitting a word into
+      // per-letter elements drops the kerning between them, and a late font
+      // swap changes the metrics too. So measure what is actually on screen and
+      // shrink if it overflows. Two corrections converge well inside a frame.
+      for (let pass = 0; pass < 2; pass++) {
+        let worst = 1;
+        els.forEach((el) => {
+          const target = fitTarget(el);
+          if (!target || !el.offsetWidth) return;
+          worst = Math.max(worst, el.offsetWidth / target);
+        });
+        if (worst <= 1.001) break;
+        smallest = Math.max(24, smallest / worst);
         els.forEach((el) => { el.style.fontSize = `${smallest.toFixed(2)}px`; });
       }
     });
@@ -76,6 +98,9 @@ export function initFit() {
   document.fonts?.load?.('800 100px "Archivo"').then(fit).catch(() => {});
   setTimeout(fit, 600);
   setTimeout(fit, 1800);
+  // `load` fires only once every subresource is in, webfonts included — the
+  // most reliable moment to know the display face is really being used
+  window.addEventListener('load', fit, { once: true });
   // the boot overlay locks scrolling (no scrollbar); refit once it is gone
   document.addEventListener('sc:booted', fit, { once: true });
 
@@ -96,7 +121,14 @@ export function initFit() {
     clearTimeout(t);
     t = setTimeout(fit, 120);
   }, { passive: true });
+
+  refitFn = fit;
 }
+
+let refitFn = null;
+
+/** Re-measure the fitted lines. Call after anything that changes their width. */
+export function refit() { refitFn?.(); }
 
 // ---------------------------------------------------------------------------
 // 2. SCRAMBLE — text resolves out of noise. Used on section headings, where
