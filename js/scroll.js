@@ -125,6 +125,26 @@ export function initChrome() {
   }
   const ticks = $$('.rail__tick');
 
+  // Section numbers are generated from document order, in the nav, the compact
+  // subnav and every SEC.xx heading. Inserting a section no longer means
+  // renumbering six places by hand and missing one.
+  const index = new Map(sections.map((s, i) => [s.id, pad(i + 1)]));
+  links.forEach((l) => {
+    const id = (l.getAttribute('href') || '').slice(1);
+    const n = index.get(id);
+    if (!n) return;
+    const tag = l.querySelector('i');
+    if (tag) tag.textContent = n;
+    else l.textContent = `${n} ${l.textContent.replace(/^\d+\s+/, '')}`;
+  });
+  sections.forEach((s, i) => {
+    const code = s.querySelector('.sec-head__code');
+    if (!code) return;
+    const name = s.dataset.name || s.id.toUpperCase();
+    code.textContent = `SEC.${pad(i + 1)} / ${name}`;
+    code.dataset.text = code.textContent;      // the scramble effect reads this
+  });
+
   const clock = () => {
     if (!railClock) return;
     const d = new Date();

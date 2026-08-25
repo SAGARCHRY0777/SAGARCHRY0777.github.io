@@ -22,6 +22,7 @@ import { initQuery } from './query.js';
 import { initEffects } from './effects.js';
 import { initPatchbay } from './patchbay.js';
 import { initBench } from './bench.js';
+import { initArchive } from './archive.js';
 import { initHistorian } from './historian.js';
 import { initInstruments } from './instruments.js';
 
@@ -68,6 +69,7 @@ function boot() {
     initHeroGL($('.hero__gl'));
     initSignal();
     initBench();
+    initArchive();
   });
 }
 

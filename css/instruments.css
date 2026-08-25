@@ -397,3 +397,14 @@
 @media (prefers-reduced-motion: reduce) {
   .nav__progress { display: none; }
 }
+
+/* ----------------------------------------------------------------------------
+   ARCHIVER — the swinging-door chart. Taller than the scopes because the
+   whole point is the shape of a thirty-minute record, not an instant.
+   -------------------------------------------------------------------------- */
+.archive__scope {
+  width: 100%;
+  height: clamp(220px, 32vw, 330px);
+  display: block;
+  background: color-mix(in srgb, var(--void) 60%, var(--panel));
+}

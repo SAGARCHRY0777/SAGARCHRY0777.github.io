@@ -93,7 +93,8 @@
   <nav class="nav__links" aria-label="Sections">
     <a class="nav__link" href="#thesis"><i>02</i>Thesis</a>
     <a class="nav__link" href="#signal"><i>03</i>Signal</a>
-    <a class="nav__link" href="#systems"><i>04</i>Systems</a>
+    <a class="nav__link" href="#archive"><i>04</i>Archive</a>
+    <a class="nav__link" href="#systems"><i>05</i>Systems</a>
     <a class="nav__link" href="#capability"><i>05</i>Capability</a>
     <a class="nav__link" href="#trajectory"><i>06</i>Trajectory</a>
     <a class="nav__link" href="#match"><i>07</i>Match</a>
@@ -118,7 +119,8 @@
 <nav class="subnav" aria-label="Sections (compact)">
   <a href="#thesis">02 Thesis</a>
   <a href="#signal">03 Signal</a>
-  <a href="#systems">04 Systems</a>
+  <a href="#archive">04 Archive</a>
+  <a href="#systems">05 Systems</a>
   <a href="#capability">05 Capability</a>
   <a href="#trajectory">06 Trajectory</a>
   <a href="#match">07 Match</a>
@@ -269,6 +271,78 @@
           </p>
           <p class="note" data-reveal="rise">
             Synthetic signal, real detector. Plant data stays with the plant.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ====================================================================
+       SEC.04 — ARCHIVE
+       ==================================================================== -->
+  <section class="section" id="archive" data-name="ARCHIVE">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-head__code" data-scramble>SEC.04 / ARCHIVE</p>
+        <h2 class="display h2" data-split data-step="45">A sample a second, for hours</h2>
+        <p class="sec-head__spec">
+          What a historian actually stores, and the error bound it promises
+          in exchange. Swinging-door compression, running here.
+        </p>
+      </header>
+
+      <div class="grid">
+        <div class="col-8">
+          <div class="panel" data-reveal="lift">
+            <div class="panel__bar">
+              <span class="label label--trace">TE-204 &middot; 30 min run</span>
+              <span class="label">swinging door &middot; tolerance <span data-arc="band">&plusmn;6.0 &deg;C</span> &middot; corridor <span data-arc="corridor">&plusmn;3.00 &deg;C</span></span>
+            </div>
+            <canvas class="archive__scope" data-archive
+                    aria-label="Raw temperature record with the points a historian would store"></canvas>
+
+            <div class="signal__stats">
+              <div class="stat"><div class="stat__v" data-arc="in">1800</div><div class="label">Samples in</div></div>
+              <div class="stat"><div class="stat__v" data-arc="kept">0</div><div class="label">Points stored</div></div>
+              <div class="stat"><div class="stat__v" data-arc="ratio">0:1</div><div class="label">Compression</div></div>
+              <div class="stat"><div class="stat__v" data-arc="err" data-state="NOMINAL">0.00 &deg;C</div><div class="label">Max error, measured</div></div>
+            </div>
+
+            <div class="signal__controls">
+              <button class="btn" data-arc-regen data-magnet><span class="btn__dot"></span><span>New run</span></button>
+              <label class="label" for="band">Tolerance</label>
+              <input class="slider" id="band" type="range" min="5" max="150" step="1" value="60" data-arc-band>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4 stack">
+          <p class="body dim" data-reveal="rise">
+            The pale line is every sample the thermocouple produced. The bright
+            line is what a trend client draws back from the handful of points
+            actually written to disk &mdash; the sodium dots. Widen the deadband
+            and watch the ratio climb.
+          </p>
+          <p class="body dim" data-reveal="rise">
+            The promise is worth stating precisely, because it is easy to get
+            wrong. The door swings inside a corridor of half-width E from the
+            last stored point &mdash; but the line drawn back joins stored
+            <em style="font-style:normal">samples</em>, each of which may sit E
+            off that corridor, so the reconstruction is bounded by
+            <em style="font-style:normal;color:var(--sodium)">2E</em>. The slider
+            therefore sets the tolerance you are willing to accept, and the
+            corridor is half of it.
+          </p>
+          <p class="body dim" data-reveal="rise">
+            <em style="font-style:normal;color:var(--sodium)">Max error</em> is
+            measured, not asserted: the chart rebuilds the reconstruction and
+            compares it against all 1800 originals. A test over 240 generated
+            runs holds it under the stated tolerance every time.
+          </p>
+          <p class="note" data-reveal="rise">
+            Decimation would keep every tenth sample and lose the transients.
+            This keeps the corners and throws away the straight runs.
           </p>
         </div>
       </div>
