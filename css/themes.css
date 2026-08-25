@@ -1,0 +1,236 @@
+/* ============================================================================
+   THEMES
+   Six palettes. Every one redefines the SAME token names declared in
+   tokens.css and nothing else — no component ever knows which theme is on.
+   The WebGL hero reads --void / --sodium / --trace / --scheme straight out of
+   these blocks, so the shader repaints with the page.
+
+   States handled:
+     :root                       -> SODIUM  (default, and the un-stamped state)
+     @media light + :not([data-theme]) -> DATASHEET (follows the OS)
+     :root[data-theme="…"]       -> explicit choice, always wins
+     "dark" / "light"            -> aliases, so a host that stamps those works
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- SODIUM --
+   Default. Sodium-vapour warning lamp on warm steel. */
+:root[data-theme="sodium"],
+:root[data-theme="dark"] {
+  --void: #0A0908;   --panel: #14120F;  --panel-2: #1D1A15; --panel-3: #262117;
+  --rule: #2C2721;   --rule-soft: #1E1B16;
+  --ink: #EFEAE1;    --ink-mid: #B4ABA0; --ink-dim: #8A8175; --ink-faint: #5A5349;
+  --sodium: #FF7A18; --sodium-soft: #FF9F52; --sodium-glow: rgba(255,122,24,0.16);
+  --trace: #35D6C4;  --trace-soft: rgba(53,214,196,0.14);
+  --nominal: #86D46B; --warning: #F2C14E; --alarm: #FF4B3E;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.045);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px var(--rule),
+             0 24px 60px -30px rgba(0,0,0,0.9);
+  --grain-opacity: 0.045;
+  --scheme: dark;
+  color-scheme: dark;
+}
+
+/* -------------------------------------------------------------- PHOSPHOR --
+   A green-phosphor CRT terminal. Amber is the data colour, as it was on
+   a real two-colour scope. */
+:root[data-theme="phosphor"] {
+  --void: #050A06;   --panel: #0B140D; --panel-2: #111D14; --panel-3: #17281A;
+  --rule: #1E3322;   --rule-soft: #142219;
+  --ink: #DDF5E1;    --ink-mid: #93B79A; --ink-dim: #6E8F75; --ink-faint: #45604B;
+  --sodium: #6BFF7C; --sodium-soft: #A6FFB0; --sodium-glow: rgba(107,255,124,0.14);
+  --trace: #F2C14E;  --trace-soft: rgba(242,193,78,0.14);
+  --nominal: #6BFF7C; --warning: #F2C14E; --alarm: #FF6B5A;
+  --lift: inset 0 1px 0 rgba(180,255,190,0.05);
+  --lift-hi: inset 0 1px 0 rgba(180,255,190,0.09), 0 0 0 1px var(--rule),
+             0 24px 60px -30px rgba(0,0,0,0.9);
+  --grain-opacity: 0.06;
+  --scheme: dark;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ ICE --
+   Cold instrument blue. The clean-room reading of the same layout. */
+:root[data-theme="ice"] {
+  --void: #05080E;   --panel: #0C1220; --panel-2: #121B2C; --panel-3: #182339;
+  --rule: #22314B;   --rule-soft: #162033;
+  --ink: #E4ECF7;    --ink-mid: #9FB2CC; --ink-dim: #7387A3; --ink-faint: #4A5C77;
+  --sodium: #5AA9FF; --sodium-soft: #8FC5FF; --sodium-glow: rgba(90,169,255,0.16);
+  --trace: #9AF0FF;  --trace-soft: rgba(154,240,255,0.13);
+  --nominal: #6BE39A; --warning: #FFC65A; --alarm: #FF6A6A;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.05);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.09), 0 0 0 1px var(--rule),
+             0 24px 60px -30px rgba(0,0,0,0.9);
+  --grain-opacity: 0.04;
+  --scheme: dark;
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------- PLASMA --
+   Magenta arc on violet. The loudest of the six — a deliberate outlier. */
+:root[data-theme="plasma"] {
+  --void: #08060E;   --panel: #120C1D; --panel-2: #1A1129; --panel-3: #241736;
+  --rule: #322048;   --rule-soft: #1F1531;
+  --ink: #F0E7FA;    --ink-mid: #B9A8CF; --ink-dim: #8E7DA8; --ink-faint: #5D5076;
+  --sodium: #FF4DA6; --sodium-soft: #FF85C4; --sodium-glow: rgba(255,77,166,0.16);
+  --trace: #A78BFA;  --trace-soft: rgba(167,139,250,0.16);
+  --nominal: #7DE8A8; --warning: #FFC85A; --alarm: #FF5B7A;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.055);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px var(--rule),
+             0 24px 60px -30px rgba(0,0,0,0.9);
+  --grain-opacity: 0.05;
+  --scheme: dark;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------ DATASHEET --
+   The light theme: a printed engineering datasheet. */
+:root[data-theme="datasheet"],
+:root[data-theme="light"] {
+  --void: #EDEAE3;   --panel: #F6F4EF; --panel-2: #E6E2D8; --panel-3: #DCD6C9;
+  --rule: #D0C9BB;   --rule-soft: #E2DDD1;
+  --ink: #16130F;    --ink-mid: #423B31; --ink-dim: #6B6357; --ink-faint: #9A9184;
+  --sodium: #C4520A; --sodium-soft: #E0700F; --sodium-glow: rgba(196,82,10,0.12);
+  --trace: #0C8F82;  --trace-soft: rgba(12,143,130,0.14);
+  --nominal: #3F8B2C; --warning: #9A7410; --alarm: #C1281C;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.7);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(40,30,15,0.45);
+  --grain-opacity: 0.03;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------ BLUEPRINT --
+   Light, but cold: drafting paper and a technical-pen blue. */
+:root[data-theme="blueprint"] {
+  --void: #E2E9F0;   --panel: #EFF3F8; --panel-2: #D8E2ED; --panel-3: #C8D6E5;
+  --rule: #AABDD2;   --rule-soft: #CFDCE9;
+  --ink: #0E2237;    --ink-mid: #36506B; --ink-dim: #5B7592; --ink-faint: #8AA1BA;
+  --sodium: #15568F; --sodium-soft: #1E75BE; --sodium-glow: rgba(21,86,143,0.12);
+  --trace: #B0530C;  --trace-soft: rgba(176,83,12,0.14);
+  --nominal: #2F7A46; --warning: #96700D; --alarm: #B32D22;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.75);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.85), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(14,34,55,0.4);
+  --grain-opacity: 0.028;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* --- OS preference, only while nothing is stamped ------------------------ */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --void: #EDEAE3;   --panel: #F6F4EF; --panel-2: #E6E2D8; --panel-3: #DCD6C9;
+    --rule: #D0C9BB;   --rule-soft: #E2DDD1;
+    --ink: #16130F;    --ink-mid: #423B31; --ink-dim: #6B6357; --ink-faint: #9A9184;
+    --sodium: #C4520A; --sodium-soft: #E0700F; --sodium-glow: rgba(196,82,10,0.12);
+    --trace: #0C8F82;  --trace-soft: rgba(12,143,130,0.14);
+    --nominal: #3F8B2C; --warning: #9A7410; --alarm: #C1281C;
+    --lift: inset 0 1px 0 rgba(255,255,255,0.7);
+    --lift-hi: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 0 1px var(--rule),
+               0 20px 44px -32px rgba(40,30,15,0.45);
+    --grain-opacity: 0.03;
+    --scheme: light;
+    color-scheme: light;
+  }
+}
+
+/* ============================================================================
+   THEME SWITCHER
+   ========================================================================== */
+.themer { position: relative; }
+
+.themer__panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 90;
+  width: 224px;
+  padding: var(--s-3);
+  border: var(--hair) solid var(--rule);
+  border-radius: var(--r-card);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--lift-hi);
+  display: grid;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity var(--d-std) var(--e-out),
+              transform var(--d-slow) var(--e-out);
+}
+.themer.is-open .themer__panel { opacity: 1; transform: none; pointer-events: auto; }
+
+.themer__title {
+  padding: var(--s-2) var(--s-2) var(--s-3);
+  border-bottom: var(--hair) solid var(--rule-soft);
+  margin-bottom: var(--s-2);
+}
+
+.themer__opt {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: 7px var(--s-2);
+  border-radius: 6px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: background var(--d-micro) var(--e-out), color var(--d-micro) var(--e-out);
+}
+.themer__opt:hover { background: var(--panel-3); color: var(--ink); }
+.themer__opt.is-on { color: var(--ink); }
+.themer__opt.is-on::after {
+  content: "●";
+  margin-left: auto;
+  color: var(--sodium);
+  font-size: 9px;
+}
+
+/* the swatch previews the palette using literal values — it must NOT follow
+   the active theme, or every row would look identical */
+.themer__sw {
+  width: 30px;
+  height: 16px;
+  border-radius: 3px;
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  overflow: hidden;
+  outline: var(--hair) solid var(--rule);
+}
+.themer__sw i { display: block; }
+
+/* ============================================================================
+   THEME TRANSITION
+   A sodium wipe sweeps the viewport while the tokens swap underneath, so the
+   palette never changes in a visible single frame.
+   ========================================================================== */
+.themewipe {
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  background: var(--sodium);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+.themewipe.is-in {
+  animation: themeSweep 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+@keyframes themeSweep {
+  0%   { transform: scaleY(0); transform-origin: bottom; }
+  45%  { transform: scaleY(1); transform-origin: bottom; }
+  46%  { transform: scaleY(1); transform-origin: top; }
+  100% { transform: scaleY(0); transform-origin: top; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themewipe { display: none; }
+}

@@ -1,0 +1,401 @@
+/* ============================================================================
+   LAYOUT — rail, nav, section shell, grid, footer
+   ========================================================================== */
+
+.shell {
+  position: relative;
+  padding-left: var(--rail);
+}
+
+/* ----------------------------------------------------------------------------
+   INSTRUMENT RAIL
+   A fixed left edge carrying live readouts. This is the device the whole
+   page is pretending to be — it stays put while content scrolls past it.
+   -------------------------------------------------------------------------- */
+.rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--rail);
+  height: 100vh;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-5) 0;
+  border-right: var(--hair) solid var(--rule);
+  background: color-mix(in srgb, var(--void) 82%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+@media (min-width: 900px) { .rail { display: flex; } }
+
+.rail__mark {
+  width: 22px;
+  height: 22px;
+  border: var(--hair) solid var(--sodium);
+  border-radius: 50%;
+  position: relative;
+  flex: none;
+}
+.rail__mark::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--sodium);
+  animation: pulse 2.6s var(--e-io) infinite;
+}
+
+.rail__code {
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+.rail__code b { color: var(--sodium); font-weight: 500; }
+
+.rail__ticks {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--s-5) 0;
+}
+.rail__tick {
+  width: 8px;
+  height: var(--hair);
+  background: var(--ink-faint);
+  transition: width var(--d-std) var(--e-out),
+              background var(--d-std) var(--e-out);
+}
+.rail__tick.is-on { width: 20px; background: var(--sodium); }
+
+.rail__meter {
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: var(--t-tick);
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------------------------------------------------------
+   NAV
+   -------------------------------------------------------------------------- */
+.nav {
+  position: fixed;
+  top: 0;
+  left: var(--rail);
+  right: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--gutter);
+  border-bottom: var(--hair) solid transparent;
+  background: transparent;
+  transition: background var(--d-std) var(--e-out),
+              border-color var(--d-std) var(--e-out),
+              padding var(--d-std) var(--e-out);
+}
+.nav.is-stuck {
+  background: color-mix(in srgb, var(--void) 74%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: var(--rule);
+  padding-top: var(--s-3);
+  padding-bottom: var(--s-3);
+}
+
+.nav__id {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+.nav__id span { color: var(--sodium); }
+.nav__id { white-space: nowrap; }
+@media (max-width: 479px) {
+  .nav { gap: var(--s-2); }
+  .nav__id { font-size: 0.8rem; }
+  .nav__tools { gap: var(--s-2); }
+  .nav .btn:not(.btn--icon) { padding-inline: var(--s-3); }
+  .nav [data-print] { display: none; }
+}
+
+.nav__links {
+  display: none;
+  align-items: center;
+  gap: var(--s-5);
+}
+@media (min-width: 1040px) { .nav__links { display: flex; } }
+
+.nav__link {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  position: relative;
+  padding-bottom: 3px;
+  transition: color var(--d-micro) var(--e-out);
+}
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--hair);
+  background: var(--sodium);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--d-std) var(--e-out);
+}
+.nav__link:hover,
+.nav__link.is-active { color: var(--ink); }
+.nav__link:hover::after,
+.nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
+.nav__link i {
+  font-style: normal;
+  color: var(--ink-faint);
+  margin-right: 6px;
+}
+
+.nav__tools { display: flex; align-items: center; gap: var(--s-3); }
+
+/* --- mobile subnav: horizontal scroll strip, hidden once the full links fit */
+.subnav {
+  position: fixed;
+  top: 58px;
+  left: var(--rail);
+  right: 0;
+  z-index: 65;
+  display: flex;
+  gap: var(--s-4);
+  padding: var(--s-2) var(--gutter) var(--s-3);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background: color-mix(in srgb, var(--void) 82%, transparent);
+  backdrop-filter: blur(18px);
+  border-bottom: var(--hair) solid var(--rule);
+}
+.subnav::-webkit-scrollbar { display: none; }
+.subnav a {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  padding: 2px 0;
+}
+.subnav a.is-active { color: var(--sodium); }
+@media (min-width: 1040px) { .subnav { display: none; } }
+
+/* ----------------------------------------------------------------------------
+   SECTION SHELL
+   Every section opens with a datasheet header: code / name / one-line spec.
+   -------------------------------------------------------------------------- */
+.section {
+  position: relative;
+  padding: var(--section-y) var(--gutter);
+  border-top: var(--hair) solid var(--rule-soft);
+}
+.section--flush { padding-top: 0; border-top: none; }
+.section--tight { padding-block: clamp(64px, 8vw, 120px); }
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
+
+.sec-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+  padding-bottom: var(--s-6);
+  margin-bottom: var(--s-6);
+  border-bottom: var(--hair) solid var(--rule);
+}
+@media (min-width: 860px) {
+  .sec-head {
+    grid-template-columns: 120px minmax(0, 1fr) minmax(0, 26ch);
+    gap: var(--s-6);
+    align-items: end;
+  }
+}
+
+.sec-head__code {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--sodium);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.sec-head__code::before {
+  content: "";
+  width: 18px;
+  height: var(--hair);
+  background: var(--sodium);
+  flex: none;
+}
+
+.sec-head__spec {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+/* --- 12 column grid ------------------------------------------------------ */
+/* One column below 860px — every child full width. The 12-column raster
+   exists only where the col-* spans are also live, so nothing can ever be
+   auto-placed into a single 1/12 sliver on a phone. */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6) var(--s-5);
+}
+.grid > * { min-width: 0; }
+.col-full { grid-column: 1 / -1; }
+@media (min-width: 860px) {
+  .grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .col-7 { grid-column: span 7; }
+  .col-5 { grid-column: span 5; }
+  .col-6 { grid-column: span 6; }
+  .col-4 { grid-column: span 4; }
+  .col-8 { grid-column: span 8; }
+  .col-4--right { grid-column: 9 / -1; }
+}
+
+/* --- stack helper -------------------------------------------------------- */
+.stack   { display: flex; flex-direction: column; gap: var(--s-4); }
+.stack-6 { display: flex; flex-direction: column; gap: var(--s-6); }
+.stack-7 { display: flex; flex-direction: column; gap: var(--s-7); }
+.row     { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+
+/* ----------------------------------------------------------------------------
+   HERO
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(var(--s-10) + var(--s-8)) var(--gutter) var(--s-7);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero > .wrap { min-width: 0; max-width: 100%; }
+
+.hero__gl {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+}
+
+/* fallback painted underneath the canvas — also the no-WebGL state */
+.hero__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(90% 70% at 78% 18%, var(--sodium-glow), transparent 62%),
+    radial-gradient(70% 60% at 12% 82%, var(--trace-soft), transparent 60%),
+    var(--void);
+}
+
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    var(--void) 2%,
+    color-mix(in srgb, var(--void) 62%, transparent) 34%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.hero__top {
+  position: absolute;
+  top: clamp(104px, 13vh, 148px);
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+@media (max-width: 899px) {
+  .hero { justify-content: space-between; }
+  .hero__top { position: static; margin-bottom: var(--s-7); }
+}
+
+.hero__name {
+  font-size: var(--t-mega);
+  margin-bottom: var(--s-5);
+}
+.hero__name .ln { display: block; }
+
+.hero__meta {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+  padding-top: var(--s-6);
+  border-top: var(--hair) solid var(--rule);
+}
+@media (min-width: 900px) {
+  .hero__meta { grid-template-columns: minmax(0, 1fr) minmax(0, 30rem); align-items: start; }
+}
+
+/* ----------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+.foot {
+  border-top: var(--hair) solid var(--rule);
+  padding: var(--s-7) var(--gutter) var(--s-6)
+           calc(var(--gutter) + var(--rail));
+}
+.foot__grid {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .foot__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.foot__bar {
+  margin-top: var(--s-7);
+  padding-top: var(--s-4);
+  border-top: var(--hair) solid var(--rule-soft);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-3);
+}

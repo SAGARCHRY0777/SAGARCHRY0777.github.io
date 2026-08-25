@@ -1,0 +1,337 @@
+/* ============================================================================
+   MOTION
+   Every animated state in the page. Durations and easings come from
+   tokens.css — nothing here invents its own curve.
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------------
+   KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.72); }
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes sweep {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100%); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ----------------------------------------------------------------------------
+   PRELOADER
+   Counter runs to 100, the sodium rule fills, then the panel splits
+   vertically and the page is behind it.
+   -------------------------------------------------------------------------- */
+.no-js .boot { display: none; }
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--void);
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  align-items: center;
+  padding: var(--gutter);
+  transition: opacity var(--d-std) var(--e-out);
+}
+.boot.is-done { pointer-events: none; }
+
+.boot__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--void);
+  border-color: var(--rule);
+  transition: transform var(--d-cine) var(--e-io);
+  z-index: 2;
+}
+.boot__panel--t { top: 0;    border-bottom: var(--hair) solid var(--rule); }
+.boot__panel--b { bottom: 0; border-top:    var(--hair) solid var(--rule); }
+.boot.is-done .boot__panel--t { transform: translateY(-100%); }
+.boot.is-done .boot__panel--b { transform: translateY(100%); }
+
+.boot__core {
+  position: relative;
+  z-index: 3;
+  grid-row: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  max-width: var(--maxw);
+  width: 100%;
+  margin-inline: auto;
+  transition: opacity var(--d-std) var(--e-in);
+}
+.boot.is-done .boot__core { opacity: 0; }
+
+.boot__n {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-size: clamp(4rem, 16vw, 13rem);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.boot__log {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-align: right;
+  min-width: 18ch;
+}
+.boot__log b { color: var(--sodium); font-weight: 500; }
+
+.boot__rule {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--gutter);
+  height: var(--hair);
+  background: var(--rule);
+  z-index: 3;
+}
+.boot__rule i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--sodium);
+  transition: width 240ms linear;
+}
+
+/* ----------------------------------------------------------------------------
+   CUSTOM CURSOR
+   Dot tracks 1:1, ring lags. Pointer-fine devices only.
+   -------------------------------------------------------------------------- */
+.cur, .cur-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9997;
+  pointer-events: none;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity var(--d-std) var(--e-out);
+}
+.cur {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: #fff;
+}
+.cur-ring {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1px solid #fff;
+  transition: opacity var(--d-std) var(--e-out),
+              width var(--d-std) var(--e-out),
+              height var(--d-std) var(--e-out),
+              margin var(--d-std) var(--e-out),
+              background var(--d-std) var(--e-out);
+}
+body.cursor-on .cur,
+body.cursor-on .cur-ring { opacity: 1; }
+
+body.cursor-hot .cur-ring {
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  background: rgba(255, 255, 255, 0.14);
+}
+body.cursor-hot .cur { opacity: 0; }
+
+@media (hover: none), (pointer: coarse) {
+  .cur, .cur-ring { display: none; }
+}
+
+/* ----------------------------------------------------------------------------
+   REVEALS
+   [data-reveal] elements start masked and are released by the observer.
+   -------------------------------------------------------------------------- */
+[data-reveal] {
+  --rv-delay: 0ms;
+}
+
+/* line / word mask — used on every headline */
+.msk { display: block; overflow: hidden; }
+.js .msk > i {
+  display: block;
+  font-style: inherit;
+  transform: translateY(112%) rotateX(-28deg);
+  transform-origin: top center;
+  opacity: 0;
+  transition:
+    transform var(--d-cine) var(--e-out) var(--rv-delay),
+    opacity   var(--d-slow) var(--e-out) var(--rv-delay);
+}
+.is-in .msk > i,
+.msk.is-in > i { transform: translateY(0) rotateX(0deg); opacity: 1; }
+
+/* word-level split for the hero name */
+.wsplit { display: inline-flex; flex-wrap: wrap; gap: 0 0.28em; }
+
+/* fade + rise, the workhorse */
+.js [data-reveal="rise"] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity   var(--d-slow) var(--e-out) var(--rv-delay),
+    transform var(--d-slow) var(--e-out) var(--rv-delay);
+}
+[data-reveal="rise"].is-in { opacity: 1; transform: none; }
+
+/* hairline that draws itself left→right */
+.js [data-reveal="rule"] {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-cine) var(--e-out) var(--rv-delay);
+}
+[data-reveal="rule"].is-in { transform: scaleX(1); }
+
+/* clip wipe — used on the panels and the signal scope */
+.js [data-reveal="wipe"] {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--d-cine) var(--e-out) var(--rv-delay);
+}
+[data-reveal="wipe"].is-in { clip-path: inset(0 0 0 0); }
+
+/* scale-in for cards */
+.js [data-reveal="lift"] {
+  opacity: 0;
+  transform: translateY(34px) scale(0.985);
+  transition:
+    opacity   var(--d-slow) var(--e-out) var(--rv-delay),
+    transform var(--d-cine) var(--e-out) var(--rv-delay);
+}
+[data-reveal="lift"].is-in { opacity: 1; transform: none; }
+
+/* ----------------------------------------------------------------------------
+   PINNED THESIS
+   A 400vh rail; the inner panel sticks and the lines cross-fade against
+   scroll progress. This is the slow, deep transition.
+   -------------------------------------------------------------------------- */
+.pin { position: relative; }
+.pin__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--section-y) var(--gutter);
+}
+.pin__lines { position: relative; max-width: var(--maxw); margin-inline: auto; width: 100%; }
+.pin__line {
+  position: absolute;
+  inset: auto 0 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  font-size: clamp(1.75rem, 5.4vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  opacity: 0;
+  transform: translateY(38px);
+  filter: blur(9px);
+  transition:
+    opacity   var(--d-slow) var(--e-out),
+    transform var(--d-cine) var(--e-out),
+    filter    var(--d-slow) var(--e-out);
+  will-change: transform, opacity, filter;
+}
+.pin__line:first-child { position: relative; }
+.pin__line.is-on { opacity: 1; transform: none; filter: blur(0); }
+.pin__line.is-past { opacity: 0; transform: translateY(-38px); filter: blur(9px); }
+
+.pin__progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--s-6);
+  height: var(--hair);
+  background: var(--rule);
+}
+.pin__progress i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--sodium);
+}
+
+/* ----------------------------------------------------------------------------
+   SCROLL VELOCITY SKEW
+   Applied to a few large blocks. Tiny amounts only — 0 to ~3deg.
+   -------------------------------------------------------------------------- */
+[data-skew] { will-change: transform; }
+
+/* parallax layers */
+[data-para] { will-change: transform; }
+
+/* ----------------------------------------------------------------------------
+   TO-TOP
+   -------------------------------------------------------------------------- */
+.totop {
+  position: fixed;
+  right: var(--s-5);
+  bottom: var(--s-5);
+  z-index: 80;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: var(--hair) solid var(--rule);
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  backdrop-filter: blur(12px);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translateY(16px) scale(0.9);
+  pointer-events: none;
+  transition: all var(--d-slow) var(--e-out);
+}
+.totop.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.totop:hover { border-color: var(--sodium); color: var(--sodium); }
+
+/* ============================================================================
+   REDUCED MOTION
+   Everything cinematic collapses to a short fade. Nothing loops, nothing
+   translates, the WebGL field stops animating (handled in JS too).
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .msk > i,
+  [data-reveal="rise"],
+  .js [data-reveal="lift"] { transform: none !important; opacity: 1; }
+  .js [data-reveal="rule"] { transform: scaleX(1) !important; }
+  .js [data-reveal="wipe"] { clip-path: none !important; }
+
+  .pin__line { position: relative; opacity: 1; transform: none !important; filter: none !important; }
+  .pin__line.is-past { opacity: 1; }
+  /* beats the inline 460vh — without this, reduced-motion visitors scroll
+     through six thousand pixels of nothing */
+  .pin { height: auto !important; }
+  .pin__stage { position: relative; height: auto; }
+  .pin__lines { display: flex; flex-direction: column; gap: var(--s-5); }
+
+  .cur, .cur-ring { display: none; }
+  .marquee__track { transform: none !important; }
+}

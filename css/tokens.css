@@ -1,0 +1,105 @@
+/* ============================================================================
+   TOKENS
+   The entire design system lives in this file. Nothing below this file
+   should ever hard-code a colour, a font, a radius or a duration.
+
+   The design is DARK-FIRST (it is an instrument panel), so the base
+   :root block below carries the default SODIUM palette. The five alternate
+   palettes, the OS-preference override and the switcher live in themes.css,
+   which redefines these same token names and nothing else.
+   ========================================================================== */
+
+:root {
+  /* --- ground ------------------------------------------------------------ */
+  --void:      #0A0908;   /* warm near-black, the page ground               */
+  --panel:     #14120F;   /* raised surface                                  */
+  --panel-2:   #1D1A15;   /* second elevation                                */
+  --panel-3:   #262117;   /* hover / active surface                          */
+  --rule:      #2C2721;   /* hairline                                        */
+  --rule-soft: #1E1B16;   /* quieter hairline                                */
+
+  /* --- ink --------------------------------------------------------------- */
+  --ink:       #EFEAE1;   /* primary text, warm off-white                    */
+  --ink-mid:   #B4ABA0;
+  --ink-dim:   #8A8175;   /* labels, captions                                */
+  --ink-faint: #5A5349;   /* tick marks, disabled                            */
+
+  /* --- signal ------------------------------------------------------------ */
+  --sodium:      #FF7A18; /* THE accent. sodium-vapour warning lamp.         */
+  --sodium-soft: #FF9F52;
+  --sodium-glow: rgba(255, 122, 24, 0.16);
+  --trace:       #35D6C4; /* instrument teal. DATA TRACES ONLY.              */
+  --trace-soft:  rgba(53, 214, 196, 0.14);
+
+  /* --- semantic state (never used as decoration) ------------------------- */
+  --nominal: #86D46B;
+  --warning: #F2C14E;
+  --alarm:   #FF4B3E;
+
+  /* --- type -------------------------------------------------------------- */
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* fluid scale — never a fixed px size in a component file */
+  --t-mega:  clamp(2.75rem, 10vw, 8.5rem);   /* fallback only - [data-fit] overrides */
+  --t-h1:    clamp(2.5rem, 7vw, 6rem);
+  --t-h2:    clamp(1.9rem, 4.4vw, 3.5rem);
+  --t-h3:    clamp(1.3rem, 2.2vw, 1.85rem);
+  --t-lead:  clamp(1.05rem, 1.55vw, 1.35rem);
+  --t-body:  clamp(0.95rem, 1.05vw, 1.0625rem);
+  --t-small: 0.875rem;
+  --t-label: 0.6875rem;   /* mono, uppercase, tracked                        */
+  --t-tick:  0.625rem;
+
+  --lh-tight: 0.92;
+  --lh-head:  1.06;
+  --lh-body:  1.62;
+  --track-label: 0.14em;
+
+  /* --- space (8px base, 4px half-steps) ---------------------------------- */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+  --s-10: 128px;
+  --section-y: clamp(64px, 8vw, 128px);
+  --gutter:    clamp(20px, 4vw, 56px);
+  --rail:      clamp(0px, 4vw, 62px);
+  --maxw:      1360px;
+  --measure:   66ch;
+
+  /* --- form -------------------------------------------------------------- */
+  --r-card: 12px;
+  --r-pill: 999px;
+  --hair:   1px;
+
+  /* --- motion ------------------------------------------------------------ */
+  --e-out:   cubic-bezier(0.16, 1, 0.30, 1);    /* expo out — the primary   */
+  --e-in:    cubic-bezier(0.70, 0.00, 0.84, 0);
+  --e-io:    cubic-bezier(0.76, 0.00, 0.24, 1);
+  --d-micro: 150ms;
+  --d-std:   400ms;
+  --d-slow:  900ms;
+  --d-cine:  1400ms;   /* cinematic — headline reveals, curtains            */
+  --stagger: 55ms;
+
+  /* --- depth (no drop shadows in dark — border + inner glow) ------------- */
+  --lift: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  --lift-hi: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+             0 0 0 1px var(--rule),
+             0 24px 60px -30px rgba(0, 0, 0, 0.9);
+
+  --grain-opacity: 0.045;
+  --scheme: dark;
+  color-scheme: dark;
+}
+
+/* The alternate palettes (and the OS-preference override) live in themes.css.
+   Everything above is theme-independent; everything colour-shaped below the
+   --scheme line is redefined there, token for token. */

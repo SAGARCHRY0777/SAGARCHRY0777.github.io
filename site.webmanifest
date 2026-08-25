@@ -1,0 +1,11 @@
+{
+  "name": "Sagar Chaudhary — Industrial AI Engineer",
+  "short_name": "Sagar Chaudhary",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0908",
+  "theme_color": "#0A0908",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
