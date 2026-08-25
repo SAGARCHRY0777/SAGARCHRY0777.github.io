@@ -170,6 +170,78 @@
   color-scheme: light;
 }
 
+/* ---------------------------------------------------------------- LINEN --
+   Ivory stock and espresso ink: the warmest of the set, with an oxblood
+   accent instead of an orange one. For anyone who finds Paper clinical. */
+:root[data-theme="linen"] {
+  --void: #F2EDE1;   --panel: #FAF6EC; --panel-2: #E6DFCD; --panel-3: #D8CFB8;
+  --rule: #C9BFA6;   --rule-soft: #E0D8C6;
+  --ink: #211A10;    --ink-mid: #463A28; --ink-dim: #665843; --ink-faint: #8B7D64;
+  --sodium: #97331F; --sodium-soft: #B84528; --sodium-glow: rgba(151,51,31,0.11);
+  --trace: #12665F;  --trace-soft: rgba(18,102,95,0.13);
+  --nominal: #4A7A2B; --warning: #8A6809; --alarm: #A02414;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.72);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.85), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(60,45,25,0.38);
+  --grain-opacity: 0.032;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* --------------------------------------------------------------- LEDGER --
+   Accounting-pad green with a ledger-red accent and an indigo trace. The
+   oldest data-display convention there is, and still the most legible. */
+:root[data-theme="ledger"] {
+  --void: #E4EBDF;   --panel: #F0F5EC; --panel-2: #D5E0CE; --panel-3: #C3D2BB;
+  --rule: #A9BCA0;   --rule-soft: #CEDCC7;
+  --ink: #16200F;    --ink-mid: #35482C; --ink-dim: #52684A; --ink-faint: #7C9072;
+  --sodium: #A82717; --sodium-soft: #C4331F; --sodium-glow: rgba(168,39,23,0.10);
+  --trace: #2D4A8A;  --trace-soft: rgba(45,74,138,0.13);
+  --nominal: #2E7A46; --warning: #8A6A0C; --alarm: #7E1A0F;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.72);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.85), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(20,45,20,0.34);
+  --grain-opacity: 0.03;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ ASH --
+   A light theme that is not white. Neutral warm grey with safety amber —
+   the least glare of the nine, and the closest to a real panel fascia. */
+:root[data-theme="ash"] {
+  --void: #DDDAD5;   --panel: #EAE7E2; --panel-2: #CFCBC5; --panel-3: #BEB9B2;
+  --rule: #A9A49C;   --rule-soft: #CBC7C0;
+  --ink: #171614;    --ink-mid: #3B3934; --ink-dim: #58554E; --ink-faint: #7F7970;
+  --sodium: #B4700A; --sodium-soft: #D08610; --sodium-glow: rgba(180,112,10,0.12);
+  --trace: #16607F;  --trace-soft: rgba(22,96,127,0.13);
+  --nominal: #3F7A2E; --warning: #8A6A0C; --alarm: #B02C22;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.6);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.75), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(35,32,28,0.4);
+  --grain-opacity: 0.034;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------- SLATE --
+   Cool neutral grey under a vermilion accent — the most modern-feeling of
+   the light set, and the highest-contrast after Paper. */
+:root[data-theme="slate"] {
+  --void: #E3E6E9;   --panel: #EFF2F4; --panel-2: #D3D8DD; --panel-3: #C0C7CE;
+  --rule: #A6AEB6;   --rule-soft: #CBD2D8;
+  --ink: #14171A;    --ink-mid: #363C42; --ink-dim: #535A62; --ink-faint: #7B838C;
+  --sodium: #C33A16; --sodium-soft: #DE4B22; --sodium-glow: rgba(195,58,22,0.11);
+  --trace: #0A6E86;  --trace-soft: rgba(10,110,134,0.13);
+  --nominal: #2F7A46; --warning: #8A6A0C; --alarm: #9C2418;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.7);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.82), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(20,25,30,0.36);
+  --grain-opacity: 0.026;
+  --scheme: light;
+  color-scheme: light;
+}
+
 /* --- OS preference, only while nothing is stamped ------------------------ */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
@@ -293,4 +365,45 @@
 
 @media (prefers-reduced-motion: reduce) {
   .themewipe { display: none; }
+}
+
+/* ============================================================================
+   VIEW TRANSITION
+   Same story as the sweep above, told by the browser instead of an overlay.
+   startViewTransition freezes the old frame; the new palette is clipped to
+   nothing and uncovered from the bottom, so a supporting browser sees the same
+   bottom-up wipe the .themewipe div draws everywhere else. Wrapped in
+   @supports so it costs nothing where the pseudo-elements do not exist.
+   ========================================================================== */
+@supports (view-transition-name: root) {
+  /* The old frame holds still and is simply covered. Animating both would
+     cross-fade two full-page snapshots, and every colour between the palettes
+     would be a blend of the two. */
+  ::view-transition-old(root) {
+    animation: none;
+    z-index: 0;
+  }
+  /* The new palette rides over the top. mix-blend-mode is reset because the UA
+     sets plus-lighter for its cross-fade, which would ADD the two frames in the
+     overlap instead of replacing them. */
+  ::view-transition-new(root) {
+    animation: themeVTWipe var(--d-slow) var(--e-io) forwards;
+    z-index: 1;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    mix-blend-mode: normal;
+  }
+
+  @keyframes themeVTWipe {
+    from { clip-path: inset(100% 0 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+}
+
+/* The JS never starts a transition when motion is reduced; this covers the
+   frames the browser might animate on its own. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
 }

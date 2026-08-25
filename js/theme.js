@@ -21,6 +21,10 @@ export const THEMES = [
   { id: 'paper',     name: 'Paper',     sw: ['#FBFAF7', '#C2410C', '#0E7C74'], scheme: 'light' },
   { id: 'sand',      name: 'Sand',      sw: ['#EAE2D4', '#A8480C', '#0B6E63'], scheme: 'light' },
   { id: 'mint',      name: 'Mint',      sw: ['#E5EDE8', '#A8450F', '#0F6E8C'], scheme: 'light' },
+  { id: 'linen',     name: 'Linen',     sw: ['#F2EDE1', '#97331F', '#12665F'], scheme: 'light' },
+  { id: 'ledger',    name: 'Ledger',    sw: ['#E4EBDF', '#A82717', '#2D4A8A'], scheme: 'light' },
+  { id: 'ash',       name: 'Ash',       sw: ['#DDDAD5', '#B4700A', '#16607F'], scheme: 'light' },
+  { id: 'slate',     name: 'Slate',     sw: ['#E3E6E9', '#C33A16', '#0A6E86'], scheme: 'light' },
   { id: 'blueprint', name: 'Blueprint', sw: ['#E2E9F0', '#15568F', '#B0530C'], scheme: 'light' },
 ];
 
@@ -44,12 +48,32 @@ function stamp(id) {
 
 const $$opts = () => Array.from(document.querySelectorAll('.themer__opt'));
 
+// A view transition owns one snapshot of the whole root, so two overlapping
+// swaps would fight over it. While one is in flight the next press just stamps.
+let swapping = false;
+
 /**
  * Swap under a sweep. The wipe covers the viewport at the moment the tokens
  * change, so the palette never flips in a frame the eye can catch.
+ *
+ * Where the browser can snapshot the page itself it does that covering for us,
+ * and better: startViewTransition holds the old frame while the stylesheet
+ * wipes the new palette over it, so the overlay is not needed on that path.
  */
 function swap(id) {
   if (reduced()) { stamp(id); return; }
+
+  if (typeof document.startViewTransition === 'function') {
+    if (swapping) { stamp(id); return; }
+    swapping = true;
+    const vt = document.startViewTransition(() => stamp(id));
+    // .finished rejects when a transition is skipped — a newer one starting, or
+    // the tab going to the background. The tokens are already stamped by then,
+    // so there is nothing to undo: both outcomes are the same cleanup.
+    const done = () => { swapping = false; };
+    vt.finished.then(done, done);
+    return;
+  }
 
   let wipe = $('.themewipe');
   if (!wipe) {
@@ -85,12 +109,15 @@ export function initTheme() {
           <span>${t.name}</span>
         </button>`;
 
+    const dark = THEMES.filter((t) => t.scheme === 'dark');
+    const light = THEMES.filter((t) => t.scheme === 'light');
+
     panel.innerHTML =
-      `<p class="label themer__title">Palette</p>` +
-      `<p class="label themer__group">Dark</p>` +
-      THEMES.filter((t) => t.scheme === 'dark').map(row).join('') +
-      `<p class="label themer__group">Light</p>` +
-      THEMES.filter((t) => t.scheme === 'light').map(row).join('');
+      `<p class="label themer__title">Palette &mdash; ${THEMES.length}</p>` +
+      `<p class="label themer__group">Dark &middot; ${dark.length}</p>` +
+      dark.map(row).join('') +
+      `<p class="label themer__group">Light &middot; ${light.length}</p>` +
+      light.map(row).join('');
 
     const trigger = $('[data-theme-toggle]', host);
 

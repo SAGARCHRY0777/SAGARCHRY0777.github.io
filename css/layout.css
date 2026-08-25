@@ -93,6 +93,7 @@
    -------------------------------------------------------------------------- */
 .nav {
   position: fixed;
+  /* the scroll-progress hairline is absolutely positioned against this */
   top: 0;
   left: var(--rail);
   right: 0;

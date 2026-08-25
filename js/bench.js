@@ -148,6 +148,26 @@ export function initBench() {
     }
   }
 
+  /**
+   * Phosphor bloom: the same path stroked wide-and-faint before it is stroked
+   * crisp. A real scope's trace glows because the phosphor keeps emitting
+   * after the beam has passed; on a light ground it would just look muddy,
+   * so it is dark-theme only.
+   */
+  function glowStroke(path, colour, dark) {
+    if (dark) {
+      ctx.save();
+      ctx.strokeStyle = colour;
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.08; ctx.lineWidth = 7; ctx.stroke(path);
+      ctx.globalAlpha = 0.16; ctx.lineWidth = 3.4; ctx.stroke(path);
+      ctx.restore();
+    }
+    ctx.strokeStyle = colour;
+    ctx.lineWidth = 1.5;
+    ctx.stroke(path);
+  }
+
   function draw() {
     size();
     const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -160,6 +180,8 @@ export function initBench() {
     const acc   = cssVar('--sodium');
     const alarm = cssVar('--alarm');
     const faint = cssVar('--ink-faint');
+    const dark  = cssVar('--scheme') !== 'light';
+    const mono  = cssVar('--font-mono') || '"IBM Plex Mono", monospace';
 
     ctx.clearRect(0, 0, w, h);
 
@@ -188,7 +210,7 @@ export function initBench() {
       ctx.setLineDash([]);
       ctx.globalAlpha = 1;
       ctx.fillStyle = acc;
-      ctx.font = '500 9px "IBM Plex Mono", monospace';
+      ctx.font = `500 9px ${mono}`;
       ctx.fillText(`${label} ${v}`, w - 58, y - 4);
     });
 
@@ -205,21 +227,21 @@ export function initBench() {
     ctx.globalAlpha = 1;
 
     // depth trace, filled
-    ctx.beginPath();
+    const line = new Path2D();
+    const area = new Path2D();
     hist.forEach((s, i) => {
       const x = xOf(i), y = yOf(s.depth);
-      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      if (i) { line.lineTo(x, y); area.lineTo(x, y); }
+      else   { line.moveTo(x, y); area.moveTo(x, y); }
     });
-    ctx.strokeStyle = trace;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.lineTo(xOf(hist.length - 1), yOf(0));
-    ctx.lineTo(xOf(0), yOf(0));
-    ctx.closePath();
+    area.lineTo(xOf(hist.length - 1), yOf(0));
+    area.lineTo(xOf(0), yOf(0));
+    area.closePath();
     ctx.fillStyle = trace;
     ctx.globalAlpha = 0.08;
-    ctx.fill();
+    ctx.fill(area);
     ctx.globalAlpha = 1;
+    glowStroke(line, trace, dark);
 
     // batch flushes: sodium ticks on the trace
     hist.forEach((s, i) => {
@@ -235,7 +257,7 @@ export function initBench() {
     ctx.beginPath(); ctx.moveTo(0, lane + 6.5); ctx.lineTo(w, lane + 6.5); ctx.stroke();
     ctx.globalAlpha = 1;
     ctx.fillStyle = faint;
-    ctx.font = '500 9px "IBM Plex Mono", monospace';
+    ctx.font = `500 9px ${mono}`;
     ctx.fillText('429 / RETRY-AFTER', 10, lane + 20);
     hist.forEach((s, i) => {
       if (!s.rejected) return;

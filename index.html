@@ -99,6 +99,7 @@
     <a class="nav__link" href="#match"><i>07</i>Match</a>
     <a class="nav__link" href="#query"><i>08</i>Query</a>
   </nav>
+  <span class="nav__progress" aria-hidden="true"></span>
   <div class="nav__tools">
     <div class="themer">
       <button class="btn btn--icon" data-theme-toggle
@@ -199,7 +200,8 @@
         <h2 class="display h2" data-split data-step="45">Anomaly detection, running here</h2>
         <p class="sec-head__spec">
           Trailing-window mean and σ, EWMA-smoothed z-score, threshold with
-          hysteresis. The same detector shape that runs on the test bed.
+          hysteresis — and the same buffer through a 256-point FFT, in orders
+          of shaft speed. The detector shape that runs on the test bed.
         </p>
       </header>
 
@@ -233,6 +235,12 @@
 
             <div class="signal__controls">
               <button class="btn" data-sig-inject data-magnet><span class="btn__dot"></span><span>Inject bearing fault</span></button>
+
+              <span class="seg" role="group" aria-label="Analysis domain">
+                <button class="seg__b is-on" data-sig-mode="time" aria-pressed="true">Time</button>
+                <button class="seg__b" data-sig-mode="spectrum" aria-pressed="false">Spectrum</button>
+              </span>
+
               <label class="label" for="sens">Sensitivity</label>
               <input class="slider" id="sens" type="range" min="1" max="10" step="1" value="6" data-sig-sens>
             </div>
@@ -251,6 +259,13 @@
             entire commercial case for predictive maintenance. Turn the sensitivity up
             and it fires earlier and false-alarms more; turn it down and it goes quiet.
             Choosing that number is most of the job.
+          </p>
+          <p class="body dim" data-reveal="rise">
+            Now switch to <em style="font-style:normal;color:var(--sodium)">spectrum</em>
+            and inject again. The same buffer, through a 256-point FFT, plotted in orders
+            of shaft speed. The fault that was invisible in the time trace stands straight
+            up at <em style="font-style:normal;color:var(--sodium)">7.2X</em>. Rotating
+            machinery is diagnosed in the frequency domain, not the time domain — this is why.
           </p>
           <p class="note" data-reveal="rise">
             Synthetic signal, real detector. Plant data stays with the plant.
