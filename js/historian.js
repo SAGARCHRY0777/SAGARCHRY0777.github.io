@@ -38,13 +38,20 @@ export function initHistorian() {
         <span class="hist__flag" data-hist-flag></span>
       </div>
     </div>
-    <div class="hist__card mono" data-hist-card aria-live="polite"></div>`;
+    <div class="hist__card mono" data-hist-card></div>
+    <p class="sr-only" data-hist-announce aria-live="polite"></p>`;
 
   const strip  = $('[data-hist-strip]', host);
   const bands  = $('[data-hist-bands]', host);
   const cursor = $('[data-hist-cursor]', host);
   const flag   = $('[data-hist-flag]', host);
   const card   = $('[data-hist-card]', host);
+  const announce = $('[data-hist-announce]', host);
+  let announceT = 0;
+  const say = (text) => {
+    clearTimeout(announceT);
+    announceT = setTimeout(() => { if (announce) announce.textContent = text; }, 350);
+  };
 
   // ---- bands: one lane per kind, drawn once --------------------------------
   const LANES = { education: 0, role: 1, cert: 2, award: 2 };
@@ -125,6 +132,8 @@ export function initHistorian() {
         ? `${earned.length} — ${earned.slice(-2).map((r) => escapeHtml(r.label.split(':')[0])).join(' · ')}`
         : 'nothing yet') +
       (roles.length ? row('In flight', escapeHtml(roles[0].detail)) : '');
+
+    say(`${label(t)}: ${roles.length ? roles[0].label : (edu.length ? 'student' : 'no role')}, ${earned.length} credentials earned`);
   }
 
   function setFromClientX(cx) {

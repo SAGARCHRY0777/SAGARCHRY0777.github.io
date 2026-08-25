@@ -152,7 +152,7 @@
   align-items: center;
   padding: var(--s-6) 0;
   text-align: left;
-  transition: padding-left var(--d-slow) var(--e-out);
+  transition: transform var(--d-slow) var(--e-out);
 }
 @media (max-width: 859px) {
   .sys__head { grid-template-columns: minmax(0, 1fr) 30px; }
@@ -163,7 +163,7 @@
 @media (min-width: 860px) {
   .sys__head { grid-template-columns: 76px minmax(0, 1fr) minmax(0, 15rem) auto; }
 }
-.sys:hover .sys__head { padding-left: var(--s-4); }
+.sys:hover .sys__head { transform: translateX(var(--s-4)); }
 
 .sys__glow {
   position: absolute;
@@ -179,7 +179,7 @@
   font-family: var(--font-mono);
   font-size: var(--t-label);
   letter-spacing: var(--track-label);
-  color: var(--ink-faint);
+  color: var(--ink-dim);
   font-variant-numeric: tabular-nums;
   display: none;
 }
@@ -466,7 +466,8 @@
   color: var(--ink-mid);
   background: var(--panel-2);
   cursor: default;
-  transition: all var(--d-micro) var(--e-out);
+  transition: color var(--d-micro) var(--e-out), border-color var(--d-micro) var(--e-out),
+              background var(--d-micro) var(--e-out);
 }
 .skill:hover { border-color: var(--sodium); color: var(--sodium); }
 .skill.is-hit {
@@ -491,7 +492,9 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: var(--hair);
-  height: 0%;
+  height: 100%;
+  transform: scaleY(0);
+  transform-origin: top;
   background: var(--sodium);
   display: block;
 }
@@ -506,7 +509,8 @@
   border-radius: 50%;
   border: var(--hair) solid var(--ink-faint);
   background: var(--void);
-  transition: all var(--d-std) var(--e-out);
+  transition: border-color var(--d-std) var(--e-out), background var(--d-std) var(--e-out),
+              box-shadow var(--d-std) var(--e-out);
 }
 .tl__item.is-lit .tl__dot { border-color: var(--sodium); background: var(--sodium); box-shadow: 0 0 0 4px var(--sodium-glow); }
 .tl__when { margin-bottom: var(--s-2); }
@@ -533,7 +537,7 @@
   line-height: 1.7;
   color: var(--ink);
 }
-.console__io::placeholder { color: var(--ink-faint); }
+.console__io::placeholder { color: var(--ink-dim); }
 .console__io:focus { outline: none; box-shadow: inset 0 0 0 1px var(--sodium); }
 
 .console__out {
@@ -569,9 +573,11 @@
 .gauge__bar i {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
   background: linear-gradient(90deg, var(--sodium), var(--sodium-soft));
-  transition: width var(--d-cine) var(--e-out);
+  transition: transform var(--d-cine) var(--e-out);
 }
 
 .kv { display: grid; gap: var(--s-3); }
@@ -620,7 +626,7 @@
   border: var(--hair) solid var(--rule);
   border-radius: var(--r-pill);
   color: var(--ink-dim);
-  transition: all var(--d-micro) var(--e-out);
+  transition: color var(--d-micro) var(--e-out), border-color var(--d-micro) var(--e-out);
 }
 .chipbtn:hover { border-color: var(--sodium); color: var(--sodium); }
 
@@ -659,10 +665,10 @@
   font-size: clamp(1.1rem, 2.6vw, 1.9rem);
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  transition: padding-left var(--d-slow) var(--e-out), color var(--d-std) var(--e-out);
+  transition: transform var(--d-slow) var(--e-out), color var(--d-std) var(--e-out);
 }
 .contact__link:last-of-type { border-bottom: var(--hair) solid var(--rule); }
-.contact__link:hover { padding-left: var(--s-4); color: var(--sodium); }
+.contact__link:hover { transform: translateX(var(--s-4)); color: var(--sodium); }
 .contact__link span { font-family: var(--font-mono); font-size: var(--t-label); letter-spacing: var(--track-label); color: var(--ink-dim); }
 
 /* ----------------------------------------------------------------------------
@@ -682,8 +688,9 @@
 .portrait img {
   width: 100%;
   height: auto;              /* the height attribute must not pin the box */
-  aspect-ratio: 1;
-  object-fit: cover;
+  aspect-ratio: 27 / 40;      /* the source's own ratio: nothing is cropped */
+  object-fit: contain;        /* and nothing is cropped if it ever drifts */
+  object-position: 50% 50%;
   filter: grayscale(1) contrast(1.12) brightness(0.88);
   transform: scale(1.02);
   transition: filter var(--d-cine) var(--e-out),
@@ -761,7 +768,8 @@
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--ink-dim);
-  transition: all var(--d-std) var(--e-out);
+  transition: color var(--d-std) var(--e-out), border-color var(--d-std) var(--e-out),
+              background var(--d-std) var(--e-out), transform var(--d-std) var(--e-out);
 }
 .dl__row:hover {
   color: var(--ink);
@@ -770,7 +778,7 @@
   transform: translateX(4px);
 }
 .dl__row b { color: var(--sodium); font-weight: 500; }
-.dl__row span:last-child { color: var(--ink-faint); }
+.dl__row span:last-child { color: var(--ink-dim); }
 .dl__row.is-pick { border-color: var(--sodium); background: var(--sodium-glow); color: var(--ink); }
 
 /* ----------------------------------------------------------------------------
@@ -798,8 +806,8 @@
    The element must shrink-wrap its own text, or offsetWidth reports the
    CONTAINER width and the solver has nothing to solve. Specificity here has
    to beat `.hero__name .ln`, hence the attribute on the descendant selector. */
-.hero__name .ln[data-fit],
-[data-fit] {
+.js .hero__name .ln[data-fit],
+.js [data-fit] {
   display: flex;
   flex-wrap: nowrap;
   width: max-content;

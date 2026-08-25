@@ -71,9 +71,9 @@
 .rocker__text em {
   font-style: normal;
   font-family: var(--font-mono);
-  font-size: var(--t-tick);
+  font-size: var(--t-label);
   letter-spacing: 0.06em;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
 }
 .rocker--reset { opacity: 0.75; }
 

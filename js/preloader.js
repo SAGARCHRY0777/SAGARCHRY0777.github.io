@@ -49,7 +49,7 @@ export function initPreloader(onDone) {
     if (value > 100) value = 100;
 
     num.textContent = pad(Math.floor(value), 3);
-    fill.style.width = `${value}%`;
+    fill.style.transform = `scaleX(${(value / 100).toFixed(3)})`;
 
     const wanted = Math.min(STEPS.length - 1, Math.floor(value / 21));
     if (wanted !== step) {

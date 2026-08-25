@@ -18,6 +18,9 @@ export const THEMES = [
   { id: 'ice',       name: 'Ice',       sw: ['#05080E', '#5AA9FF', '#9AF0FF'], scheme: 'dark'  },
   { id: 'plasma',    name: 'Plasma',    sw: ['#08060E', '#FF4DA6', '#A78BFA'], scheme: 'dark'  },
   { id: 'datasheet', name: 'Datasheet', sw: ['#EDEAE3', '#C4520A', '#0C8F82'], scheme: 'light' },
+  { id: 'paper',     name: 'Paper',     sw: ['#FBFAF7', '#C2410C', '#0E7C74'], scheme: 'light' },
+  { id: 'sand',      name: 'Sand',      sw: ['#EAE2D4', '#A8480C', '#0B6E63'], scheme: 'light' },
+  { id: 'mint',      name: 'Mint',      sw: ['#E5EDE8', '#A8450F', '#0F6E8C'], scheme: 'light' },
   { id: 'blueprint', name: 'Blueprint', sw: ['#E2E9F0', '#15568F', '#B0530C'], scheme: 'light' },
 ];
 
@@ -31,9 +34,11 @@ export function currentTheme() {
 
 function stamp(id) {
   document.documentElement.setAttribute('data-theme', id);
-  $$opts().forEach((b) => b.classList.toggle('is-on', b.dataset.theme === id));
-  const label = $('[data-theme-name]');
-  if (label) label.textContent = THEMES.find((t) => t.id === id)?.name || id;
+  $$opts().forEach((b) => {
+    const on = b.dataset.theme === id;
+    b.classList.toggle('is-on', on);
+    b.setAttribute('aria-checked', String(on));
+  });
   listeners.forEach((fn) => fn(id));
 }
 
@@ -72,22 +77,45 @@ export function initTheme() {
   // --- build the menu -------------------------------------------------------
   if (host) {
     const panel = $('.themer__panel', host);
-    panel.innerHTML =
-      `<p class="label themer__title">Palette</p>` +
-      THEMES.map((t) => `
+    const row = (t) => `
         <button class="themer__opt" data-theme="${t.id}" role="menuitemradio">
           <span class="themer__sw" aria-hidden="true">
             ${t.sw.map((c) => `<i style="background:${c}"></i>`).join('')}
           </span>
           <span>${t.name}</span>
-        </button>`).join('');
+        </button>`;
+
+    panel.innerHTML =
+      `<p class="label themer__title">Palette</p>` +
+      `<p class="label themer__group">Dark</p>` +
+      THEMES.filter((t) => t.scheme === 'dark').map(row).join('') +
+      `<p class="label themer__group">Light</p>` +
+      THEMES.filter((t) => t.scheme === 'light').map(row).join('');
 
     const trigger = $('[data-theme-toggle]', host);
 
+    // closed = hidden from the tab order as well as from the eye
+    const setOpen = (open) => {
+      host.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      if (open) $$opts()[0]?.focus();
+    };
+    setOpen(false);
+
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
-      host.classList.toggle('is-open');
-      trigger.setAttribute('aria-expanded', String(host.classList.contains('is-open')));
+      setOpen(!host.classList.contains('is-open'));
+    });
+
+    panel.addEventListener('keydown', (e) => {
+      const opts = $$opts();
+      const i = opts.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const next = (i + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length;
+        opts[next].focus();
+      }
     });
 
     panel.addEventListener('click', (e) => {
@@ -96,17 +124,21 @@ export function initTheme() {
       const id = btn.dataset.theme;
       swap(id);
       try { localStorage.setItem(KEY, id); } catch { /* ignore */ }
-      host.classList.remove('is-open');
-      trigger.setAttribute('aria-expanded', 'false');
+      setOpen(false);
+      trigger.focus();
     });
 
     document.addEventListener('click', (e) => {
-      if (!host.contains(e.target)) host.classList.remove('is-open');
+      if (!host.contains(e.target) && host.classList.contains('is-open')) setOpen(false);
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') host.classList.remove('is-open');
-      // quick cycle: press T
-      if (e.key === 't' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName)) {
+      if (e.key === 'Escape' && host.classList.contains('is-open')) { setOpen(false); trigger.focus(); }
+      // quick cycle: press T (bare key only — never steal Ctrl+T, and never
+      // while a field or a slider has focus)
+      const a = document.activeElement;
+      const typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable
+        || a.getAttribute('role') === 'slider');
+      if (e.key === 't' && !e.ctrlKey && !e.metaKey && !e.altKey && !typing) {
         const i = THEMES.findIndex((t) => t.id === currentTheme());
         const next = THEMES[(i + 1) % THEMES.length].id;
         swap(next);

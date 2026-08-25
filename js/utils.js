@@ -23,7 +23,9 @@ const ticks = new Set();
 let running = false;
 
 function frame(t) {
-  ticks.forEach((fn) => fn(t));
+  ticks.forEach((fn) => {
+    try { fn(t); } catch (err) { console.warn('[tick]', err); ticks.delete(fn); }
+  });
   if (ticks.size) requestAnimationFrame(frame);
   else running = false;
 }

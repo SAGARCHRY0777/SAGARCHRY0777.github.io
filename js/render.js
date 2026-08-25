@@ -74,12 +74,14 @@ export function renderSystems() {
 
     const links = (s.links || []).map((l) =>
       `<a class="link-out" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.text)} ↗</a>`
-    ).join('');
+    ).join('') + ((s.links || []).some((l) => /onrender/.test(l.url))
+      ? '<span class="label" style="width:100%">Free-tier host — the demo sleeps between visits and takes ~30 s to wake.</span>'
+      : '');
 
     return `
     <article class="sys" data-sys data-tags="${escapeHtml(s.tags.join(' '))}" data-reveal="rise" style="--rv-delay:${Math.min(i, 5) * 70}ms">
       <span class="sys__glow" aria-hidden="true"></span>
-      <button class="sys__head" data-sys-toggle aria-expanded="false">
+      <button class="sys__head" data-sys-toggle aria-expanded="false" aria-controls="sys-body-${i}">
         <span class="sys__no">SYS.${pad(i + 1)}</span>
         <span>
           <span class="sys__name">${escapeHtml(s.name)}</span>
@@ -90,7 +92,7 @@ export function renderSystems() {
         </span>
         <span class="sys__toggle" aria-hidden="true"></span>
       </button>
-      <div class="sys__body">
+      <div class="sys__body" id="sys-body-${i}">
         <div>
           <div class="sys__inner">
             <span class="sys__spacer"></span>
@@ -207,6 +209,8 @@ export function renderFooterFacts() {
   }
 
   $$('[data-notice]').forEach((el) => { el.textContent = DATA.availability.notice; });
+  const cnt = $('[data-resume-count]');
+  if (cnt) cnt.textContent = String(RESUMES.length);
 
   const y = $('[data-year]');
   if (y) y.textContent = String(new Date().getFullYear());
@@ -267,7 +271,7 @@ export function renderPortrait() {
   const host = $('[data-portrait]');
   if (!host) return;
   host.innerHTML = `
-    <img src="assets/img/portrait.jpg" width="880" height="880" loading="lazy" decoding="async"
+    <img src="assets/img/portrait.jpg" width="716" height="1060" loading="lazy" decoding="async"
          alt="Sagar Chaudhary">
     <span class="portrait__tone" aria-hidden="true"></span>
     <span class="portrait__lines" aria-hidden="true"></span>

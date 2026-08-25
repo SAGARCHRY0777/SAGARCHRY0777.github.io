@@ -58,6 +58,8 @@ export function initFit() {
   document.fonts?.load?.('800 100px "Archivo"').then(fit).catch(() => {});
   setTimeout(fit, 600);
   setTimeout(fit, 1800);
+  // the boot overlay locks scrolling (no scrollbar); refit once it is gone
+  document.addEventListener('sc:booted', fit, { once: true });
 
   // The decisive trigger: when the face swaps in, the line's own width
   // changes, and that is observable regardless of how the font arrived.
@@ -116,9 +118,12 @@ export function initScramble() {
     scrambleTo(el, el.dataset.text, Number(el.dataset.scramble) || 900);
   }, { threshold: 0.4, rootMargin: '0px' });
 
-  // nav links re-scramble on hover — cheap, and it makes the chrome feel live
-  $$('.nav__link, .chipbtn').forEach((el) => {
-    const original = el.textContent;
+  // preset chips re-scramble on hover — cheap, and it makes the chrome feel
+  // live. Nav links are excluded: they carry a styled child element that a
+  // textContent rewrite would destroy.
+  $$('.chipbtn').forEach((el) => {
+    const original = el.textContent.trim();
+    el.dataset.text = original;           // consumers read this, never textContent
     el.addEventListener('pointerenter', () => {
       if (el.dataset.busy === '1') return;
       el.dataset.busy = '1';
@@ -203,7 +208,17 @@ export function initRoll() {
     requestAnimationFrame(step);
   };
 
-  observe(els, (el, inView) => { if (inView) fire(el); }, { threshold: 0.5 });
+  // hero readouts sit behind the boot curtain at first — fire them when it
+  // opens, not while nobody can see them
+  const booted = () => document.documentElement.dataset.booted === '1';
+  observe(els, (el, inView) => {
+    if (!inView) return;
+    if (el.closest('.hero') && !booted()) {
+      document.addEventListener('sc:booted', () => fire(el), { once: true });
+      return;
+    }
+    fire(el);
+  }, { threshold: 0.5 });
 
   // Fallback: whatever the observer does, no readout may sit at 0 forever.
   setTimeout(() => els.forEach((el) => {

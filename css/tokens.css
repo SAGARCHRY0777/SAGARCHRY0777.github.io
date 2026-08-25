@@ -100,6 +100,10 @@
   color-scheme: dark;
 }
 
+@media (max-width: 899px) {
+  :root { --rail: 0px; }   /* the rail is hidden here — reserve nothing for it */
+}
+
 /* The alternate palettes (and the OS-preference override) live in themes.css.
    Everything above is theme-independent; everything colour-shaped below the
    --scheme line is redefined there, token for token. */

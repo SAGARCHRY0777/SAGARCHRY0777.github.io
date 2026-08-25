@@ -123,10 +123,12 @@ export function initBench() {
       rate = MIN + ((deg + 135) / 270) * (MAX - MIN);
       paintKnob();
     });
-    knob.addEventListener('pointerup', (e) => {
-      knob.releasePointerCapture?.(e.pointerId);
+    const release = (e) => {
+      try { knob.releasePointerCapture?.(e.pointerId); } catch { /* already released */ }
       knob.classList.remove('is-held');
-    });
+    };
+    knob.addEventListener('pointerup', release);
+    knob.addEventListener('pointercancel', release);
     knob.addEventListener('keydown', (e) => {
       const step = (MAX - MIN) / 20;
       if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { rate = clamp(rate + step, MIN, MAX); paintKnob(); e.preventDefault(); }
@@ -150,7 +152,7 @@ export function initBench() {
     size();
     const w = canvas.clientWidth, h = canvas.clientHeight;
     const pad = 12;
-    const lane = h - 34;                       // reject ticks live below this
+    const lane = h - 46;                       // reject ticks live below this
     const innerH = lane - pad;
 
     const rule  = cssVar('--rule');
@@ -226,14 +228,19 @@ export function initBench() {
       ctx.fillRect(xOf(i) - 1, yOf(s.depth) - 3, 2, 6);
     });
 
-    // 429 lane
+    // 429 lane — divided from the scope so a zero-depth baseline never
+    // reads as a row of rejections
+    ctx.strokeStyle = rule;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.moveTo(0, lane + 6.5); ctx.lineTo(w, lane + 6.5); ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.fillStyle = faint;
     ctx.font = '500 9px "IBM Plex Mono", monospace';
-    ctx.fillText('429 / RETRY-AFTER', 10, lane + 14);
+    ctx.fillText('429 / RETRY-AFTER', 10, lane + 20);
     hist.forEach((s, i) => {
       if (!s.rejected) return;
       ctx.fillStyle = alarm;
-      ctx.fillRect(xOf(i), lane + 20, Math.max(1.5, w / COLS - 1), Math.min(10, 2 + s.rejected * 1.4));
+      ctx.fillRect(xOf(i), lane + 26, Math.max(1.5, w / COLS - 1), Math.min(12, 2 + s.rejected * 1.4));
     });
   }
 

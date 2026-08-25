@@ -42,16 +42,19 @@ const LEXICON = [
 const DOMAIN = {
   industrial: ['industrial', 'manufacturing', 'plant', 'factory', 'ot', 'iiot',
     'iot', 'scada', 'plc', 'sensor', 'telemetry', 'predictive maintenance',
-    'test bed', 'testbed', 'engine', 'industry 4.0', 'automation', 'machine health'],
+    'test bed', 'testbed', 'engine', 'engines', 'industry 4.0', 'automation', 'machine health'],
   genai: ['llm', 'genai', 'generative', 'rag', 'agent', 'agentic', 'prompt',
     'chatbot', 'langchain', 'langgraph', 'embedding', 'vector', 'mcp', 'openai'],
   cv: ['computer vision', 'perception', 'detection', 'segmentation', 'lidar',
     'camera', 'adas', 'autonomous', 'image', 'video', 'yolo', 'annotation'],
   mlops: ['mlops', 'platform', 'serving', 'inference', 'kubernetes', 'deploy',
     'observability', 'autoscal', 'latency', 'throughput', 'ci/cd', 'sre'],
-  backend: ['backend', 'api', 'microservice', 'distributed', 'event-driven',
-    'scalab', 'concurrency', 'golang', 'database', 'queue', 'broker'],
+  backend: ['backend', 'api', 'apis', 'microservice', 'microservices', 'distributed',
+    'event driven', 'scalable', 'scalability', 'concurrency', 'golang', 'database',
+    'queue', 'broker'],
 };
+// prefix-style entries above ('autoscal', 'scalab') are matched as whole words
+// of any suffix via has() below — see domainHit.
 
 const VARIANT_LABEL = {
   industrial: 'INDUSTRIAL — IT-OT & predictive maintenance',
@@ -118,12 +121,17 @@ export function scoreJD(raw) {
   }
 
   // ---- 3. domain read ---------------------------------------------------- #
+  // whole-word (or word-prefix) matching: 'ot' must not match 'remote',
+  // 'engine' must not match 'engineer', 'api' must not match 'rapid'
+  const domainHit = (w) => new RegExp(`(^|[^a-z0-9])${norm(w).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[a-z]*([^a-z0-9]|$)`, 'i').test(text);
   const domainScore = {};
   for (const [key, words] of Object.entries(DOMAIN)) {
-    domainScore[key] = words.reduce((n, w) => n + (text.includes(w) ? 1 : 0), 0);
+    domainScore[key] = words.reduce((n, w) => n + (domainHit(w) ? 1 : 0), 0);
   }
-  const best = Object.entries(domainScore).sort((a, b) => b[1] - a[1])[0];
-  const variant = best[1] >= 2 ? best[0] : 'master';
+  const ranked = Object.entries(domainScore).sort((a, b) => b[1] - a[1]);
+  const best = ranked[0];
+  // a clear winner only: ties or weak signals fall back to the master resume
+  const variant = best[1] >= 2 && best[1] > (ranked[1]?.[1] ?? 0) ? best[0] : 'master';
 
   // ---- 4. coverage ------------------------------------------------------- #
   const h = hits.size;
@@ -222,7 +230,7 @@ export function initMatch() {
     // animate the gauge
     const bar = out.querySelector('.gauge__bar i');
     const num = out.querySelector('[data-count]');
-    requestAnimationFrame(() => { bar.style.width = `${r.score}%`; });
+    requestAnimationFrame(() => { bar.style.transform = `scaleX(${(r.score / 100).toFixed(3)})`; });
 
     const t0 = performance.now();
     const tick = (now) => {

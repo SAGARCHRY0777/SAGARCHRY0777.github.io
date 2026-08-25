@@ -63,6 +63,8 @@ function boot() {
   initPreloader(() => {
     // hero reveal is released by the boot sequence, not by the observer
     $$('.hero [data-reveal], .hero .msk').forEach((el) => el.classList.add('is-in'));
+    document.documentElement.dataset.booted = '1';
+    document.dispatchEvent(new CustomEvent('sc:booted'));
     initHeroGL($('.hero__gl'));
     initSignal();
     initBench();

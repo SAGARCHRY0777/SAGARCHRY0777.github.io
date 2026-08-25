@@ -118,7 +118,7 @@ export function initQuery() {
 
   $$('[data-q-preset]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      input.value = btn.textContent.trim();
+      input.value = (btn.dataset.text || btn.textContent).trim();
       ask(input.value);
     });
   });

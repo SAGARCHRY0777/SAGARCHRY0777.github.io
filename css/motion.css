@@ -100,9 +100,11 @@
 .boot__rule i {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
   background: var(--sodium);
-  transition: width 240ms linear;
+  transition: transform 240ms linear;
 }
 
 /* ----------------------------------------------------------------------------
@@ -132,18 +134,26 @@
   margin: -18px 0 0 -18px;
   border: 1px solid #fff;
   transition: opacity var(--d-std) var(--e-out),
-              width var(--d-std) var(--e-out),
-              height var(--d-std) var(--e-out),
-              margin var(--d-std) var(--e-out),
               background var(--d-std) var(--e-out);
+}
+/* the ring's translate is written per frame by cursor.js; the hover scale
+   rides on an inner pseudo so the two never fight over one transform */
+.cur-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transform: scale(1);
+  transition: transform var(--d-std) var(--e-out), background var(--d-std) var(--e-out);
 }
 body.cursor-on .cur,
 body.cursor-on .cur-ring { opacity: 1; }
 
-body.cursor-hot .cur-ring {
-  width: 62px;
-  height: 62px;
-  margin: -31px 0 0 -31px;
+body.cursor-hot .cur-ring { border-color: transparent; }
+body.cursor-hot .cur-ring::before {
+  transform: scale(1.72);
+  border-color: #fff;
   background: rgba(255, 255, 255, 0.14);
 }
 body.cursor-hot .cur { opacity: 0; }
@@ -265,7 +275,9 @@ body.cursor-hot .cur { opacity: 0; }
 .pin__progress i {
   display: block;
   height: 100%;
-  width: 0%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
   background: var(--sodium);
 }
 
@@ -334,4 +346,5 @@ body.cursor-hot .cur { opacity: 0; }
 
   .cur, .cur-ring { display: none; }
   .marquee__track { transform: none !important; }
+  .pin__progress i, .tl__spine i, .gauge__bar i, .boot__rule i { transform: none; }
 }

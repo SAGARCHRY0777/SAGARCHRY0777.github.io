@@ -95,7 +95,7 @@ export function initPatchbay() {
         s: scoreOf((el.dataset.tags || '').split(' ').filter(Boolean), Number(el.dataset.w) || 5),
       }));
       const best = Math.max(...scored.map((x) => x.s));
-      scored.sort((a, b) => b.s - a.s);
+      if (active.size) scored.sort((a, b) => b.s - a.s);   // lanes off = profile order
 
       const list = points[0].parentElement;
       flip(list, () => {
@@ -105,6 +105,9 @@ export function initPatchbay() {
           if (!quiet) { selected++; total += x.s; }
           list.appendChild(x.el);
         });
+        // the links block lives in the same list — keep it last
+        const links = list.querySelector('.sys__links');
+        if (links) list.appendChild(links);
       });
 
       card.dataset.score = scored.reduce((n, x) => n + x.s, 0).toFixed(0);

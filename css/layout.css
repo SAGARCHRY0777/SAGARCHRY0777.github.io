@@ -70,13 +70,14 @@
   padding: var(--s-5) 0;
 }
 .rail__tick {
-  width: 8px;
+  width: 20px;
   height: var(--hair);
   background: var(--ink-faint);
-  transition: width var(--d-std) var(--e-out),
+  transform: scaleX(0.4);
+  transition: transform var(--d-std) var(--e-out),
               background var(--d-std) var(--e-out);
 }
-.rail__tick.is-on { width: 20px; background: var(--sodium); }
+.rail__tick.is-on { transform: scaleX(1); background: var(--sodium); }
 
 .rail__meter {
   writing-mode: vertical-rl;
@@ -104,8 +105,7 @@
   border-bottom: var(--hair) solid transparent;
   background: transparent;
   transition: background var(--d-std) var(--e-out),
-              border-color var(--d-std) var(--e-out),
-              padding var(--d-std) var(--e-out);
+              border-color var(--d-std) var(--e-out);
 }
 .nav.is-stuck {
   background: color-mix(in srgb, var(--void) 74%, transparent);
@@ -171,7 +171,7 @@
 .nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
 .nav__link i {
   font-style: normal;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
   margin-right: 6px;
 }
 

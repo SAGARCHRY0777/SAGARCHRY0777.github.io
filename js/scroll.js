@@ -35,8 +35,11 @@ export function initReveals() {
   // Anything already inside the viewport reveals NOW — a visitor landing on
   // an anchor mid-page must never stare at hidden content while an observer
   // warms up.
+  // The hero is released by the preloader when the curtain opens, so it is
+  // excluded here — revealing it behind an opaque overlay wastes the entrance.
   const vh = window.innerHeight;
   items.forEach((el) => {
+    if (el.closest('.hero')) return;
     const r = el.getBoundingClientRect();
     if (r.top < vh * 0.96 && r.bottom > 0) el.classList.add('is-in');
   });
@@ -60,6 +63,7 @@ export function initScrollEngine() {
   const paraEls = $$('[data-para]');
   const skewEls = $$('[data-skew]');
   const soft = reduced();
+  const hasFx = paraEls.length || skewEls.length;
 
   const read = () => {
     scrollState.y = window.scrollY || 0;
@@ -78,7 +82,7 @@ export function initScrollEngine() {
     const v = scrollState.smooth - prev;
     scrollState.velocity = lerp(scrollState.velocity, v, 0.2);
 
-    if (soft) return;
+    if (soft || !hasFx) return;
 
     // parallax — translate only, and only while the element is near the viewport
     const vh = window.innerHeight;
@@ -103,7 +107,7 @@ export function initScrollEngine() {
 // ---------------------------------------------------------------------------
 export function initChrome() {
   const nav      = $('.nav');
-  const links    = $$('.nav__link');
+  const links    = $$('.nav__link, .subnav a');
   const sections = $$('section[id]');
   const railCode = $('[data-rail-code]');
   const railPct  = $('[data-rail-pct]');
@@ -183,7 +187,7 @@ export function initPin() {
     if (travel <= 0) return;
 
     const p = clamp(-r.top / travel);
-    if (bar) bar.style.width = `${(p * 100).toFixed(1)}%`;
+    if (bar) bar.style.transform = `scaleX(${p.toFixed(4)})`;
 
     // hold the first and last line a little longer than the middle ones
     const eased = clamp(map(p, 0.06, 0.94, 0, 1));
@@ -212,7 +216,7 @@ export function initTimeline() {
     const r = tl.getBoundingClientRect();
     const line = window.innerHeight * 0.55;
     const p = clamp((line - r.top) / r.height);
-    if (fill) fill.style.height = `${(p * 100).toFixed(1)}%`;
+    if (fill) fill.style.transform = `scaleY(${p.toFixed(4)})`;
 
     items.forEach((it) => {
       const ir = it.getBoundingClientRect();
@@ -235,5 +239,9 @@ export function initAnchors() {
     e.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - 68;
     window.scrollTo({ top, behavior: reduced() ? 'auto' : 'smooth' });
+    // move focus too — otherwise the skip link and nav are decoration for
+    // keyboard and screen-reader users
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
   });
 }

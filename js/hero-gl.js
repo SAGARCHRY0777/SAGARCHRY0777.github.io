@@ -173,8 +173,10 @@ export function initHeroGL(canvas) {
 
   let mx = 0, my = 0, tx = 0, ty = 0;
   window.addEventListener('pointermove', (e) => {
-    tx = (e.clientX / window.innerWidth) * 2 - 1;
-    ty = -((e.clientY / window.innerHeight) * 2 - 1) * (window.innerHeight / window.innerWidth);
+    // shader uv is (frag - 0.5*res) / res.y  ->  x in ±0.5·(w/h), y in ±0.5
+    const aspect = window.innerWidth / window.innerHeight;
+    tx = ((e.clientX / window.innerWidth) * 2 - 1) * 0.5 * aspect;
+    ty = -((e.clientY / window.innerHeight) * 2 - 1) * 0.5;
   }, { passive: true });
 
   const soft = reduced();

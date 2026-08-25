@@ -117,6 +117,59 @@
   color-scheme: light;
 }
 
+/* ---------------------------------------------------------------- PAPER --
+   The brightest of the set: laser-printed white at maximum contrast. The one
+   for office lighting, a projector, or anyone who finds the others dim. */
+:root[data-theme="paper"] {
+  --void: #FBFAF7;   --panel: #FFFFFF; --panel-2: #F1EFE9; --panel-3: #E4E1D8;
+  --rule: #D6D1C4;   --rule-soft: #EAE7DE;
+  --ink: #111010;    --ink-mid: #38352F; --ink-dim: #64605A; --ink-faint: #948F85;
+  --sodium: #C2410C; --sodium-soft: #E2580F; --sodium-glow: rgba(194,65,12,0.10);
+  --trace: #0E7C74;  --trace-soft: rgba(14,124,116,0.12);
+  --nominal: #3D7A2E; --warning: #8F6B0C; --alarm: #BC2B1D;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.9);
+  --lift-hi: inset 0 1px 0 #fff, 0 0 0 1px var(--rule),
+             0 18px 40px -30px rgba(20,18,14,0.35);
+  --grain-opacity: 0.022;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* ----------------------------------------------------------------- SAND --
+   Warm, low-glare desert paper — the gentlest of the nine for long reading. */
+:root[data-theme="sand"] {
+  --void: #EAE2D4;   --panel: #F4EFE4; --panel-2: #DFD5C3; --panel-3: #D0C5AF;
+  --rule: #BEB19A;   --rule-soft: #D9D0BF;
+  --ink: #241C12;    --ink-mid: #4A3F2E; --ink-dim: #6B5E4C; --ink-faint: #918370;
+  --sodium: #A8480C; --sodium-soft: #C55E15; --sodium-glow: rgba(168,72,12,0.12);
+  --trace: #0B6E63;  --trace-soft: rgba(11,110,99,0.14);
+  --nominal: #4A7A2B; --warning: #8A6809; --alarm: #AE2D1C;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.6);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.75), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(60,45,25,0.4);
+  --grain-opacity: 0.035;
+  --scheme: light;
+  color-scheme: light;
+}
+
+/* ----------------------------------------------------------------- MINT --
+   Cleanroom. Pale instrument green, copper accent, steel-blue trace — the
+   light theme that still reads as a laboratory rather than a document. */
+:root[data-theme="mint"] {
+  --void: #E5EDE8;   --panel: #F2F7F4; --panel-2: #D7E3DB; --panel-3: #C4D5CA;
+  --rule: #A9BFB1;   --rule-soft: #CEDDD4;
+  --ink: #0F2318;    --ink-mid: #32503E; --ink-dim: #566F5F; --ink-faint: #7F998B;
+  --sodium: #A8450F; --sodium-soft: #C55A1C; --sodium-glow: rgba(168,69,15,0.11);
+  --trace: #0F6E8C;  --trace-soft: rgba(15,110,140,0.13);
+  --nominal: #2E7A46; --warning: #8A6A0C; --alarm: #B02C22;
+  --lift: inset 0 1px 0 rgba(255,255,255,0.75);
+  --lift-hi: inset 0 1px 0 rgba(255,255,255,0.85), 0 0 0 1px var(--rule),
+             0 20px 44px -32px rgba(15,45,30,0.35);
+  --grain-opacity: 0.028;
+  --scheme: light;
+  color-scheme: light;
+}
+
 /* --- OS preference, only while nothing is stamped ------------------------ */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
@@ -168,6 +221,13 @@
   border-bottom: var(--hair) solid var(--rule-soft);
   margin-bottom: var(--s-2);
 }
+
+/* nine options need a shape, not a list */
+.themer__group {
+  padding: var(--s-3) var(--s-2) var(--s-2);
+  color: var(--ink-dim);
+}
+.themer__panel { max-height: min(70vh, 540px); overflow-y: auto; }
 
 .themer__opt {
   display: flex;
@@ -222,7 +282,7 @@
   transform-origin: bottom;
 }
 .themewipe.is-in {
-  animation: themeSweep 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: themeSweep var(--d-slow) var(--e-io) forwards;
 }
 @keyframes themeSweep {
   0%   { transform: scaleY(0); transform-origin: bottom; }
