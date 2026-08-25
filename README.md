@@ -122,7 +122,7 @@ out of the CSS custom properties.
 | 07 Match | JD coverage scoring with honest gaps; recommends and offers the right resume PDF | `js/match.js` |
 | 08 Query | TF-IDF retrieval over 68 grounded facts, cites sources, refuses out-of-scope | `js/query.js` |
 | Footer | Run-hours odometer (live tenure) · self-telemetry HUD (fps, long tasks, runtime transfer) | `js/instruments.js` |
-| Nav | Six palettes (press **T** to cycle) · print-to-datasheet | `js/theme.js`, `css/instruments.css` |
+| Nav | **Nine palettes** — 4 dark (Sodium, Phosphor, Ice, Plasma), 5 light (Datasheet, Paper, Sand, Mint, Blueprint); press **T** to cycle · print-to-datasheet | `js/theme.js`, `css/themes.css` |
 
 ## Deploy
 
