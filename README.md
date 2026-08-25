@@ -110,6 +110,20 @@ out of the CSS custom properties.
 
 ---
 
+## Instruments (what the page can *do*)
+
+| Section | Instrument | Backed by |
+|---|---|---|
+| 03 Signal | Live anomaly detector — trailing-window z-score, EWMA, hysteresis, fault injection | `js/signal.js` |
+| 04 Systems | **Patch bay** — five rocker switches re-weight every bullet live (same formula as the resume builder) | `js/patchbay.js` |
+| 04 Systems | **Backpressure bench** — Inferno's admission control as a knob: Poisson load, batching, dual watermarks, 429 shedding | `js/bench.js` |
+| 06 Trajectory | **Trend cursor** — drag across the career, read what was true that month | `js/historian.js` |
+| 06 Trajectory | **Annunciator wall** — achievements/certs as an ISA-18.2 alarm panel with ACK | `js/instruments.js` |
+| 07 Match | JD coverage scoring with honest gaps; recommends and offers the right resume PDF | `js/match.js` |
+| 08 Query | TF-IDF retrieval over 68 grounded facts, cites sources, refuses out-of-scope | `js/query.js` |
+| Footer | Run-hours odometer (live tenure) · self-telemetry HUD (fps, long tasks, runtime transfer) | `js/instruments.js` |
+| Nav | Six palettes (press **T** to cycle) · print-to-datasheet | `js/theme.js`, `css/instruments.css` |
+
 ## Deploy
 
 **GitHub Pages** — push, then Settings → Pages → deploy from `main` / root.

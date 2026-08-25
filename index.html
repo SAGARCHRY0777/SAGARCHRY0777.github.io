@@ -61,12 +61,12 @@
 <!-- ======================================================================
      BOOT SEQUENCE
      ====================================================================== -->
-<div class="boot" role="status" aria-live="polite">
+<div class="boot">
   <span class="boot__panel boot__panel--t" aria-hidden="true"></span>
   <span class="boot__panel boot__panel--b" aria-hidden="true"></span>
   <div class="boot__core">
-    <span class="boot__n">000</span>
-    <p class="boot__log"><b>01</b> / 05 &nbsp; link established</p>
+    <span class="boot__n" aria-hidden="true">000</span>
+    <p class="boot__log" role="status" aria-live="polite"><b>01</b> / 05 &nbsp; link established</p>
   </div>
   <span class="boot__rule" aria-hidden="true"><i></i></span>
 </div>
@@ -89,7 +89,7 @@
      NAV
      ====================================================================== -->
 <header class="nav">
-  <a class="nav__id" href="#ident" data-magnet>SAGAR CHAUDHARY <span>●</span></a>
+  <a class="nav__id" href="#ident" data-magnet>SAGAR CHAUDHARY <span aria-hidden="true">●</span></a>
   <nav class="nav__links" aria-label="Sections">
     <a class="nav__link" href="#thesis"><i>02</i>Thesis</a>
     <a class="nav__link" href="#signal"><i>03</i>Signal</a>
@@ -409,7 +409,7 @@
         <h2 class="display h2" data-split data-step="45">Paste the job. Get the honest answer.</h2>
         <p class="sec-head__spec">
           Coverage against the real vocabulary, the gaps named out loud, and
-          which of the five resume variants this role should get.
+          which of the <span data-resume-count>six</span> resume variants this role should get.
         </p>
       </header>
 
@@ -418,9 +418,9 @@
           <div class="panel" data-reveal="lift">
             <div class="panel__bar">
               <span class="label label--accent">INPUT / job description</span>
-              <span class="label">⌘ + ⏎</span>
+              <span class="label">Ctrl/⌘ + Enter</span>
             </div>
-            <textarea class="console__io" data-jd-input rows="12"
+            <textarea class="console__io" data-jd-input rows="12" aria-label="Job description"
               placeholder="Paste the full job description here…"></textarea>
             <div class="signal__controls">
               <button class="btn btn--primary" data-jd-run data-magnet><span class="btn__dot"></span><span>Analyse</span></button>
@@ -442,7 +442,7 @@
               <span class="label label--trace">OUTPUT / coverage report</span>
               <span class="label">local · no network</span>
             </div>
-            <div class="console__out" data-jd-out></div>
+            <div class="console__out" data-jd-out aria-live="polite"></div>
           </div>
         </div>
       </div>
@@ -471,7 +471,7 @@
         </div>
         <div class="panel__body">
           <div class="row" style="margin-bottom:var(--s-4)">
-            <input class="console__io" data-q-input
+            <input class="console__io" data-q-input aria-label="Question about the profile"
               style="min-height:auto;padding:var(--s-3) var(--s-4);flex:1;border:1px solid var(--rule);border-radius:6px"
               placeholder="What has he built with LangGraph?">
             <button class="btn btn--primary" data-q-run data-magnet><span class="btn__dot"></span><span>Ask</span></button>
@@ -485,7 +485,7 @@
             <button class="chipbtn" data-q-preset>What is his notice period?</button>
           </div>
 
-          <p class="answer" data-q-out>Ask a question, or press a preset.</p>
+          <p class="answer" data-q-out aria-live="polite">Ask a question, or press a preset.</p>
           <div class="answer__src" data-q-src></div>
         </div>
       </div>
@@ -549,7 +549,7 @@
         <p class="stack mono" style="gap:var(--s-2)">
           <a class="link-out" href="https://github.com/SAGARCHRY0777" target="_blank" rel="noopener">GitHub ↗</a>
           <a class="link-out" href="https://www.linkedin.com/in/sagar-chaudhary777/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <a class="link-out" href="https://inferno-ny28.onrender.com/" target="_blank" rel="noopener">Inferno, live ↗</a>
+          <a class="link-out" href="https://inferno-ny28.onrender.com/" target="_blank" rel="noopener" title="Free-tier host: sleeps between visits, ~30 s to wake">Inferno, live ↗ (wakes in ~30 s)</a>
         </p>
       </div>
     </div>
