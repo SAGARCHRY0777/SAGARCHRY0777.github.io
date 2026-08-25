@@ -239,10 +239,20 @@ body.cursor-hot .cur { opacity: 0; }
   overflow: hidden;
   padding: var(--section-y) var(--gutter);
 }
-.pin__lines { position: relative; max-width: var(--maxw); margin-inline: auto; width: 100%; }
+/* All six lines occupy ONE grid cell, so the box is as tall as the TALLEST
+   line and every line starts from the same top edge. The previous version
+   sized this box from line 1 and absolutely positioned the rest against its
+   bottom, which made a three-line statement grow upward and clip under the
+   nav. */
+.pin__lines {
+  display: grid;
+  align-content: center;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  width: 100%;
+}
 .pin__line {
-  position: absolute;
-  inset: auto 0 0 0;
+  grid-area: 1 / 1;
   font-family: var(--font-display);
   font-weight: 800;
   font-stretch: 118%;
@@ -260,7 +270,6 @@ body.cursor-hot .cur { opacity: 0; }
     filter    var(--d-slow) var(--e-out);
   will-change: transform, opacity, filter;
 }
-.pin__line:first-child { position: relative; }
 .pin__line.is-on { opacity: 1; transform: none; filter: blur(0); }
 .pin__line.is-past { opacity: 0; transform: translateY(-38px); filter: blur(9px); }
 
