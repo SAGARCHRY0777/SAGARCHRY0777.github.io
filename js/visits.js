@@ -12,12 +12,11 @@
 // └───────────────────────────────────────────────────────────────────────┘
 const CODE = 'sagarchry0777';
 
-// A visible low number works against him. A recruiter who sees "7 visits" on a
-// portfolio reads it as nobody is looking, which is worse than no number at
-// all. So the readout stays hidden until the total clears this floor — the
-// data is still collected from visit one, it just is not published yet.
-// Set to 0 to always show it.
-const MIN_TO_SHOW = 25;
+// The readout appears once the total clears this floor. It is set to 1 so the
+// count is visible as asked, while never rendering a bare "0", which reads as
+// broken rather than as new. Raise it to 25 if a low number starts to look
+// worse than no number; set it to 0 to show even a zero.
+const MIN_TO_SHOW = 1;
 
 // This is the ONE external request the site makes, and it is deliberate.
 // GoatCounter's own script is not loaded — the endpoints are called directly,
