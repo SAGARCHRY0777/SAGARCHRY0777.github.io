@@ -10,7 +10,7 @@
 // │  3. in Settings, tick "Allow adding visitor counts on your website"   │
 // │     (that is what makes the /counter/TOTAL.json endpoint public)      │
 // └───────────────────────────────────────────────────────────────────────┘
-const CODE = '';
+const CODE = 'sagarchry0777';
 
 // This is the ONE external request the site makes, and it is deliberate.
 // GoatCounter's own script is not loaded — the endpoints are called directly,
