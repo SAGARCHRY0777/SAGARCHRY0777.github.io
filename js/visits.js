@@ -12,6 +12,13 @@
 // └───────────────────────────────────────────────────────────────────────┘
 const CODE = 'sagarchry0777';
 
+// A visible low number works against him. A recruiter who sees "7 visits" on a
+// portfolio reads it as nobody is looking, which is worse than no number at
+// all. So the readout stays hidden until the total clears this floor — the
+// data is still collected from visit one, it just is not published yet.
+// Set to 0 to always show it.
+const MIN_TO_SHOW = 25;
+
 // This is the ONE external request the site makes, and it is deliberate.
 // GoatCounter's own script is not loaded — the endpoints are called directly,
 // so no third-party JavaScript ever executes here. GoatCounter sets no
@@ -54,6 +61,12 @@ async function show(code, host) {
     const total = String(data.count ?? '').trim();
     const unique = String(data.count_unique ?? '').trim();
     if (!total) throw new Error('empty');
+
+    // GoatCounter formats with thousands separators, so strip them to compare
+    if (Number(total.replace(/[^0-9]/g, '')) < MIN_TO_SHOW) {
+      host.hidden = true;
+      return;
+    }
 
     host.hidden = false;
     const nEl = $('[data-visits-total]', host);
