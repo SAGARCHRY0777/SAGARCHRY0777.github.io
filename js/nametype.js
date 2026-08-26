@@ -24,6 +24,13 @@ export function initNameType() {
   const hosts = $$('[data-warp]');
   if (!hosts.length) return;
 
+  // Bail out BEFORE splitting, not after. A touchscreen has no pointer to
+  // deflect toward, so the split would buy nothing — and it costs something
+  // real: letters in separate elements lose the kerning between them, which
+  // widens the line and made the last letter clip on narrow screens. Phones
+  // now render the name as one properly kerned word.
+  if (reduced() || isTouch()) return;
+
   // --- split into characters ------------------------------------------------
   // splitWords already set aria-label on the line and aria-hidden on its
   // inner span, so the letters below are invisible to assistive tech and the
@@ -43,8 +50,6 @@ export function initNameType() {
     });
   });
   if (!chars.length) return;
-
-  if (reduced() || isTouch()) return;   // the letters simply stay at rest
 
   // --- geometry, recached on resize and after the fit pass settles ----------
   let measured = false;
