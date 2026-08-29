@@ -829,3 +829,23 @@
 @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
   .ch { will-change: auto; }
 }
+
+/* --------------------------------------------------------------------------
+   Star button — .btn plus a mark and a live count.
+
+   The count slot ships `hidden` and is only revealed once js/star.js has a real
+   number, so a blocked script or a rate-limited API leaves a correct button
+   rather than an empty bracket.
+   -------------------------------------------------------------------------- */
+
+.btn--star svg { display: block; flex: 0 0 auto; }
+
+.btn--star .btn__count {
+  padding-left: var(--s-3);
+  border-left: var(--hair) solid var(--rule);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.btn--star:hover .btn__count { color: inherit; }
