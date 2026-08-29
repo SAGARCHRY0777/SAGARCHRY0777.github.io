@@ -838,7 +838,7 @@
    rather than an empty bracket.
    -------------------------------------------------------------------------- */
 
-.btn--star svg { display: block; flex: 0 0 auto; }
+.btn--star .btn__star { line-height: 1; font-size: 0.95em; }
 
 .btn--star .btn__count {
   padding-left: var(--s-3);
