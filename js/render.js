@@ -176,9 +176,14 @@ export function renderContact() {
   const host = $('[data-contact]');
   if (!host) return;
   const { identity, links } = DATA;
+  // The phone number is deliberately NOT rendered. This page is in sitemap.xml
+  // and robots.txt allows crawling, so a `tel:` link is a scrapeable phone
+  // number on an indexed page -- and once it is cached, it cannot be taken
+  // back. `identity.phone` is still in data.js because profile.json feeds the
+  // resume builder too; the resume is sent to a named recipient, a public page
+  // is not. Email is the right public channel.
   const rows = [
     { label: 'Email',    text: identity.email,  href: `mailto:${identity.email}` },
-    { label: 'Phone',    text: identity.phone,  href: `tel:${identity.phone.replace(/\s/g, '')}` },
     { label: 'LinkedIn', text: 'sagar-chaudhary777', href: links.linkedin },
     { label: 'GitHub',   text: 'SAGARCHRY0777',      href: links.github },
   ];
