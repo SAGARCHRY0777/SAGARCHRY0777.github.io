@@ -7,6 +7,7 @@
 
 import { $, $$, splitWords, reduced } from './utils.js';
 import { initTheme } from './theme.js';
+import { initStyle } from './style.js';
 import { initPreloader } from './preloader.js';
 import { initGrain } from './grain.js';
 import { initCursor } from './cursor.js';
@@ -38,6 +39,7 @@ function splitHeadlines() {
 
 function boot() {
   initTheme();
+  initStyle();
   renderAll();
   splitHeadlines();
 

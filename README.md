@@ -38,12 +38,14 @@ GitHub Pages straight from `main` at the repository root.
 │   ├── components.css         chips, buttons, readouts, cards, consoles, timeline
 │   ├── instruments.css        patch bay, bench, annunciator wall, odometer
 │   ├── themes.css             the 13 palettes
+│   ├── styles.css             the 22 style treatments (form, not colour)
 │   └── motion.css             every animated state + reduced-motion collapse
-├── js/                        23 modules
+├── js/                        24 modules
 │   ├── data.js                GENERATED — do not edit (see "Change a fact")
 │   ├── main.js                boot order
 │   ├── utils.js               lerp/clamp, shared rAF, observers, text splitting
 │   ├── theme.js               13 palettes on top of the OS preference
+│   ├── style.js               22 style treatments, webfonts loaded on demand
 │   ├── preloader.js           boot counter + curtain split
 │   ├── grain.js               generated film-grain tile
 │   ├── cursor.js              magnetic cursor (pointer-fine only)
@@ -97,6 +99,29 @@ across the whole page, including the WebGL hero — the shader reads its palette
 out of the CSS custom properties. The 13 palettes are defined in
 `css/themes.css` and registered in `js/theme.js`; adding one is a block in each.
 
+**Palette and style are two separate axes.** `[data-theme]` owns colour;
+`[data-style]` owns form — typeface, corner radius, hairline weight, depth and
+texture. They compose, so all 13 x 23 combinations are legal and Cyberpunk on
+Paper is a light-ground neon page rather than a broken one. A handful of styles
+whose identity *is* a colour (Cyberpunk, Pop art, Y2K, Graffiti, Retro, Aurora,
+Neumorphism) also claim the accent tokens, so those override the palette's
+accent by design.
+
+Adding a style is a block in `css/styles.css` and a row in `js/style.js`. Two
+constraints on the CSS block, both there to keep the style layer purely
+presentational:
+
+- **Override tokens, not components.** All 60-odd borders in the codebase read
+  `var(--hair)` and every corner reads `var(--r-card)`, so a token change
+  propagates on its own.
+- **Never move anything.** No `transform`, no `backdrop-filter`, no layout
+  metrics on a layout container — each of those creates a containing block or
+  shifts geometry, and the scroll engine, the pin and the fitted headline all
+  measure the layout they were handed. Type *is* allowed to change: `style.js`
+  re-runs `refit()` and fires a `resize` after every swap, and again after
+  `document.fonts.ready`, so the same code that handles a window resize handles
+  a typeface change.
+
 ---
 
 ## Instruments (what the page can *do*)
@@ -113,6 +138,7 @@ out of the CSS custom properties. The 13 palettes are defined in
 | 08 Query | TF-IDF retrieval over 68 grounded facts, cites sources, refuses out-of-scope | `js/query.js` |
 | Footer | Run-hours odometer (live tenure) · self-telemetry HUD (fps, long tasks, runtime transfer) | `js/instruments.js` |
 | Nav | **13 palettes** — 4 dark (Sodium, Phosphor, Ice, Plasma), 9 light (Datasheet, Paper, Sand, Mint, Blueprint, Ash, Ledger, Linen, Slate); press **T** to cycle · print-to-datasheet | `js/theme.js`, `css/themes.css` |
+| Nav | **22 styles** — Minimalism, Swiss, Editorial, Vector art · Glassmorphism, Liquid glass, Neumorphism, Clay, Aurora · Retro, Y2K, Victorian, Pixel art, Cyberpunk, Futuristic · Maximalism, Pop art, Collage art, Graffiti, Surreal, Bohemian, Handwritten; press **S** to cycle. Orthogonal to the palette; webfonts load only when a style is first chosen | `js/style.js`, `css/styles.css` |
 | Nav | Live GitHub star count · visit counter | `js/star.js`, `js/visits.js` |
 
 ## Deploy

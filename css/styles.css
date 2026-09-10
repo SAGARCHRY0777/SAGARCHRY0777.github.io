@@ -1,0 +1,552 @@
+/* ============================================================================
+   STYLES — the second axis.
+
+   themes.css answers "what colour is this?".  This file answers "what is this
+   MADE of?" — typeface, corner, hairline, depth, texture, tracking.
+
+   The two are deliberately orthogonal: [data-theme] owns the palette,
+   [data-style] owns the form, and every combination of the two is legal.
+   Pick Cyberpunk on Paper and you get neon form on a light ground; that is
+   a feature, not a bug.
+
+   RULES OF THIS FILE
+   1. A style redefines TOKENS. Component selectors are a last resort, and
+      only for the handful of effects a token cannot express (halftone dots,
+      a torn edge, a specular sweep).
+   2. Nothing here is loaded eagerly except this stylesheet. Style-specific
+      typefaces are injected by js/style.js the first time a style is chosen,
+      so a visitor who never opens the menu pays nothing.
+   3. Every font stack ends in a real fallback. A style whose webfont has not
+      arrived yet must still be readable, not invisible.
+   4. No style may remove a focus ring or drop contrast below the base design.
+      Decoration is negotiable; legibility is not.
+   ========================================================================== */
+
+/* ============================================================================
+   THE TEXTURE LAYER
+   One fixed overlay every style can paint into. Off unless a style sets
+   --style-tex. Sits under the cursor and the grain, above the page.
+   ========================================================================== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image: var(--style-tex, none);
+  background-size: var(--style-tex-size, auto);
+  opacity: var(--style-tex-op, 0);
+  mix-blend-mode: var(--style-tex-blend, normal);
+  transition: opacity var(--d-slow) var(--e-out);
+}
+
+/* ============================================================================
+   THE SWITCHER
+   Same shape as .themer so the two controls read as one family. The panel is
+   taller because there are 23 rows, so it scrolls.
+   ========================================================================== */
+.styler { position: relative; }
+
+.styler__panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 90;
+  width: 246px;
+  max-height: min(72vh, 560px);
+  overflow-y: auto;
+  padding: var(--s-3);
+  border: var(--hair) solid var(--rule);
+  border-radius: var(--r-card);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--lift-hi);
+  display: grid;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity var(--d-std) var(--e-out),
+              transform var(--d-slow) var(--e-out);
+}
+.styler.is-open .styler__panel { opacity: 1; transform: none; pointer-events: auto; }
+
+.styler__title {
+  padding: var(--s-2) var(--s-2) var(--s-3);
+  border-bottom: var(--hair) solid var(--rule-soft);
+  margin-bottom: var(--s-2);
+}
+.styler__group { padding: var(--s-3) var(--s-2) var(--s-2); color: var(--ink-dim); }
+
+.styler__opt {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: 7px var(--s-2);
+  border-radius: 6px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: background var(--d-micro) var(--e-out), color var(--d-micro) var(--e-out);
+}
+.styler__opt:hover { background: var(--panel-3); color: var(--ink); }
+.styler__opt.is-on { color: var(--ink); }
+.styler__opt.is-on::after {
+  content: "\25CF";
+  margin-left: auto;
+  color: var(--sodium);
+  font-size: 9px;
+}
+
+/* The chip previews the STYLE, so it carries literal values: its own corner,
+   its own border weight, its own colours. It must not follow the active
+   tokens or all 23 rows would look the same. */
+.styler__chip {
+  width: 30px;
+  height: 18px;
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  outline: 1px solid rgba(128, 128, 128, 0.45);
+}
+.styler__chip i { display: block; }
+
+/* ============================================================================
+   1 · MINIMALISM — remove until it breaks, then put one thing back
+   ========================================================================== */
+:root[data-style="minimalism"] {
+  --r-card: 0px;
+  --hair: 1px;
+  --lift: none;
+  --lift-hi: 0 0 0 1px var(--rule-soft);
+  --track-label: 0.2em;
+  --grain-opacity: 0;
+}
+:root[data-style="minimalism"] .display { font-weight: 400; font-stretch: 100%; }
+
+/* ============================================================================
+   2 · MAXIMALISM — more is more. Every surface asks for attention
+   ========================================================================== */
+:root[data-style="maximalism"] {
+  --font-display: "Bungee", "Archivo", Impact, sans-serif;
+  --r-card: 20px;
+  --hair: 3px;
+  --lift-hi: 0 0 0 3px var(--sodium), 10px 10px 0 0 var(--trace),
+             0 30px 70px -30px rgba(0, 0, 0, 0.9);
+  --track-label: 0.24em;
+  --grain-opacity: 0.09;
+  --style-tex: repeating-linear-gradient(45deg, currentColor 0 2px, transparent 2px 12px);
+  --style-tex-op: 0.05;
+}
+
+/* ============================================================================
+   3 · FUTURISTIC — thin, wide, lit from inside
+   ========================================================================== */
+:root[data-style="futuristic"] {
+  --font-display: "Orbitron", "Archivo", sans-serif;
+  --r-card: 2px;
+  --hair: 1px;
+  --track-label: 0.3em;
+  --lift: inset 0 0 24px -8px var(--trace-soft);
+  --lift-hi: 0 0 0 1px var(--trace-soft), inset 0 0 40px -12px var(--trace-soft),
+             0 0 60px -30px var(--trace);
+  --style-tex: linear-gradient(transparent 50%, rgba(128, 128, 128, 0.5) 50%);
+  --style-tex-size: 100% 3px;
+  --style-tex-op: 0.055;
+}
+
+/* ============================================================================
+   4 · VECTOR ART — flat fills, hard edges, no gradient anywhere
+   ========================================================================== */
+:root[data-style="vector-art"] {
+  --r-card: 0px;
+  --hair: 2.5px;
+  --lift: none;
+  --lift-hi: 6px 6px 0 0 var(--ink);
+  --grain-opacity: 0;
+  --track-label: 0.1em;
+}
+:root[data-style="vector-art"] .display { font-stretch: 125%; font-weight: 900; }
+
+/* ============================================================================
+   5 · COLLAGE ART — cut, layered, taped down slightly crooked
+   ========================================================================== */
+:root[data-style="collage-art"] {
+  --font-display: "Alfa Slab One", Georgia, serif;
+  --r-card: 0px;
+  --hair: 2px;
+  --lift-hi: 5px 6px 0 rgba(0, 0, 0, 0.35), -3px -4px 0 var(--trace-soft);
+  --grain-opacity: 0.14;
+  --style-tex: repeating-linear-gradient(112deg, transparent 0 22px, currentColor 22px 23px);
+  --style-tex-op: 0.05;
+}
+
+/* ============================================================================
+   6 · RETRO — 70s print. Warm, round, banded
+   ========================================================================== */
+:root[data-style="retro"] {
+  --font-display: "Righteous", "Archivo", sans-serif;
+  --sodium: #E8743B;
+  --sodium-soft: #F0A05A;
+  --trace: #F2B33D;
+  --r-card: 22px;
+  --r-pill: 999px;
+  --hair: 2px;
+  --lift-hi: 0 0 0 2px var(--rule), 0 14px 0 -6px var(--sodium-glow);
+  --grain-opacity: 0.13;
+  --track-label: 0.16em;
+  --style-tex: repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 6px);
+  --style-tex-op: 0.045;
+}
+
+/* ============================================================================
+   7 · POP ART — primaries, heavy outline, benday dots
+   ========================================================================== */
+:root[data-style="pop-art"] {
+  --font-display: "Bungee", Impact, sans-serif;
+  --sodium: #FF2B4E;
+  --sodium-soft: #FF6B84;
+  --trace: #1D4ED8;
+  --warning: #FFD400;
+  --r-card: 0px;
+  --hair: 4px;
+  --lift: none;
+  --lift-hi: 8px 8px 0 0 var(--ink);
+  --track-label: 0.12em;
+  --grain-opacity: 0;
+  --style-tex: radial-gradient(currentColor 22%, transparent 23%);
+  --style-tex-size: 9px 9px;
+  --style-tex-op: 0.13;
+}
+
+/* ============================================================================
+   8 · CYBERPUNK — neon on wet asphalt, scanlines, chromatic edge
+   ========================================================================== */
+:root[data-style="cyberpunk"] {
+  --font-display: "Chakra Petch", "Archivo", sans-serif;
+  --sodium: #FF2E88;
+  --sodium-soft: #FF6FB0;
+  --sodium-glow: rgba(255, 46, 136, 0.26);
+  --trace: #00F0FF;
+  --trace-soft: rgba(0, 240, 255, 0.20);
+  --r-card: 0px;
+  --hair: 1px;
+  --lift: inset 0 0 0 1px var(--trace-soft);
+  --lift-hi: 0 0 0 1px var(--sodium), 0 0 28px -6px var(--sodium-glow),
+             inset 0 0 40px -14px var(--trace-soft);
+  --track-label: 0.28em;
+  --grain-opacity: 0.1;
+  --style-tex: repeating-linear-gradient(0deg, rgba(0, 240, 255, 0.5) 0 1px, transparent 1px 4px);
+  --style-tex-op: 0.14;
+}
+:root[data-style="cyberpunk"] .display {
+  text-shadow: 2px 0 var(--trace), -2px 0 var(--sodium);
+}
+
+/* ============================================================================
+   9 · GLASSMORPHISM — frosted panes over a lit ground
+   ========================================================================== */
+:root[data-style="glassmorphism"] {
+  --r-card: 18px;
+  --hair: 1px;
+  --panel:   color-mix(in srgb, var(--void) 55%, transparent);
+  --panel-2: color-mix(in srgb, var(--void) 42%, transparent);
+  --panel-3: color-mix(in srgb, var(--void) 30%, transparent);
+  --rule: color-mix(in srgb, var(--ink) 18%, transparent);
+  --lift: inset 0 1px 0 color-mix(in srgb, var(--ink) 22%, transparent);
+  --lift-hi: inset 0 1px 0 color-mix(in srgb, var(--ink) 28%, transparent),
+             0 20px 60px -30px rgba(0, 0, 0, 0.7);
+  --grain-opacity: 0.02;
+  --style-tex: radial-gradient(60% 50% at 20% 0%, var(--sodium-glow), transparent 70%),
+               radial-gradient(50% 45% at 85% 30%, var(--trace-soft), transparent 70%);
+  --style-tex-op: 0.9;
+  --style-tex-blend: screen;
+}
+
+/* ============================================================================
+   10 · NEUMORPHISM — extruded from a single sheet. Light-ground only
+   ========================================================================== */
+:root[data-style="neumorphism"] {
+  --void:    #E5E6EA;
+  --panel:   #E5E6EA;
+  --panel-2: #E9EAEE;
+  --panel-3: #DDDEE3;
+  --rule:      #D3D5DA;
+  --rule-soft: #DEE0E5;
+  --ink:       #2B2E36;
+  --ink-mid:   #565A64;
+  --ink-dim:   #767B86;
+  --ink-faint: #A2A7B1;
+  --r-card: 22px;
+  --hair: 0px;
+  --lift:    6px 6px 14px #C9CBD1, -6px -6px 14px #FFFFFF;
+  --lift-hi: 9px 9px 20px #C6C8CE, -9px -9px 20px #FFFFFF;
+  --grain-opacity: 0;
+  color-scheme: light;
+}
+
+/* ============================================================================
+   11 · CLAY — soft, thick, pressable. Everything has volume
+   ========================================================================== */
+:root[data-style="clay"] {
+  --font-display: "Fredoka", "Archivo", sans-serif;
+  --font-body: "Fredoka", "IBM Plex Sans", sans-serif;
+  --r-card: 30px;
+  --r-pill: 999px;
+  --hair: 0px;
+  --lift: inset 4px 4px 10px rgba(255, 255, 255, 0.16),
+          inset -5px -5px 12px rgba(0, 0, 0, 0.22),
+          0 12px 22px -12px rgba(0, 0, 0, 0.5);
+  --lift-hi: inset 5px 5px 12px rgba(255, 255, 255, 0.2),
+             inset -6px -6px 14px rgba(0, 0, 0, 0.26),
+             0 22px 40px -18px rgba(0, 0, 0, 0.55);
+  --grain-opacity: 0;
+  --track-label: 0.1em;
+}
+
+/* ============================================================================
+   12 · PIXEL ART — an 8px grid, and nothing smoother than it
+   ========================================================================== */
+:root[data-style="pixel-art"] {
+  --font-display: "Silkscreen", "Courier New", monospace;
+  --font-mono: "Silkscreen", "Courier New", monospace;
+  --r-card: 0px;
+  --r-pill: 0px;
+  --hair: 3px;
+  --lift: none;
+  --lift-hi: 6px 6px 0 0 var(--ink), 12px 12px 0 0 var(--rule);
+  --track-label: 0.06em;
+  --grain-opacity: 0;
+  --style-tex: repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 8px),
+               repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 8px);
+  --style-tex-op: 0.05;
+}
+:root[data-style="pixel-art"] img { image-rendering: pixelated; }
+
+/* ============================================================================
+   13 · EDITORIAL — a magazine. Serif display, generous measure, hairlines
+   ========================================================================== */
+:root[data-style="editorial"] {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Newsreader", Georgia, serif;
+  --r-card: 0px;
+  --hair: 1px;
+  --lift: none;
+  --lift-hi: 0 0 0 1px var(--rule);
+  --track-label: 0.18em;
+  --lh-body: 1.72;
+  --grain-opacity: 0.02;
+}
+:root[data-style="editorial"] .display { font-weight: 500; font-stretch: 100%; }
+
+/* ============================================================================
+   14 · Y2K — chrome, bubble, and an unearned optimism about the future
+   ========================================================================== */
+:root[data-style="y2k"] {
+  --font-display: "Iceland", "Archivo", sans-serif;
+  --sodium: #C0C7D0;
+  --sodium-soft: #EAF0F7;
+  --trace: #FF64C8;
+  --trace-soft: rgba(255, 100, 200, 0.22);
+  --r-card: 26px;
+  --r-pill: 999px;
+  --hair: 2px;
+  --lift: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 8px rgba(0, 0, 0, 0.25);
+  --lift-hi: inset 0 2px 0 rgba(255, 255, 255, 0.65),
+             0 0 0 2px var(--trace-soft), 0 18px 40px -22px var(--trace);
+  --track-label: 0.2em;
+  --style-tex: linear-gradient(160deg, rgba(255, 255, 255, 0.5) 0%, transparent 30%,
+               transparent 70%, rgba(255, 100, 200, 0.4) 100%);
+  --style-tex-op: 0.18;
+}
+
+/* ============================================================================
+   15 · SWISS DESIGN — grid, Helvetica logic, one red, no ornament
+   ========================================================================== */
+:root[data-style="swiss"] {
+  --sodium: #D8121C;
+  --sodium-soft: #F2434B;
+  --trace: #111111;
+  --r-card: 0px;
+  --r-pill: 0px;
+  --hair: 2px;
+  --lift: none;
+  --lift-hi: 0 0 0 2px var(--ink);
+  --track-label: 0.06em;
+  --lh-head: 0.94;
+  --grain-opacity: 0;
+}
+:root[data-style="swiss"] .display { font-stretch: 100%; font-weight: 700; letter-spacing: -0.03em; }
+:root[data-style="swiss"] .label { text-transform: uppercase; }
+
+/* ============================================================================
+   16 · SURREAL — the proportions are wrong on purpose
+   ========================================================================== */
+:root[data-style="surreal"] {
+  --font-display: "Abril Fatface", Georgia, serif;
+  --r-card: 50% 8px 50% 8px;
+  --hair: 2px;
+  --lift-hi: 0 30px 60px -20px var(--sodium-glow), 0 0 0 2px var(--rule);
+  --grain-opacity: 0.08;
+  --lh-head: 1.2;
+  --style-tex: radial-gradient(70% 40% at 30% 20%, var(--sodium-glow), transparent 60%),
+               radial-gradient(50% 60% at 80% 70%, var(--trace-soft), transparent 60%);
+  --style-tex-op: 0.7;
+  --style-tex-blend: overlay;
+}
+
+/* ============================================================================
+   17 · BOHEMIAN — earth, weave, hand-thrown edges
+   ========================================================================== */
+:root[data-style="bohemian"] {
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --sodium: #B5651D;
+  --sodium-soft: #D9905A;
+  --trace: #6E7F5C;
+  --r-card: 40% 8% 36% 10% / 12% 40% 10% 36%;
+  --hair: 2px;
+  --lift: none;
+  --lift-hi: 0 0 0 2px var(--rule), 0 18px 40px -26px rgba(0, 0, 0, 0.6);
+  --grain-opacity: 0.16;
+  --lh-body: 1.75;
+  --style-tex: repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 7px),
+               repeating-linear-gradient(-45deg, currentColor 0 1px, transparent 1px 7px);
+  --style-tex-op: 0.05;
+}
+:root[data-style="bohemian"] .display { font-weight: 600; font-stretch: 100%; }
+
+/* ============================================================================
+   18 · VICTORIAN — plate, rule, ornament. Density as decoration
+   ========================================================================== */
+:root[data-style="victorian"] {
+  --font-display: "IM Fell English SC", Georgia, serif;
+  --font-body: "Newsreader", Georgia, serif;
+  --sodium: #7B2D26;
+  --sodium-soft: #A8503F;
+  --trace: #2F4B3F;
+  --r-card: 2px;
+  --hair: 1px;
+  --lift: inset 0 0 0 1px var(--rule-soft), inset 0 0 0 4px transparent,
+          inset 0 0 0 5px var(--rule-soft);
+  --lift-hi: inset 0 0 0 1px var(--rule), inset 0 0 0 5px transparent,
+             inset 0 0 0 6px var(--rule-soft);
+  --track-label: 0.22em;
+  --lh-body: 1.7;
+  --grain-opacity: 0.1;
+}
+:root[data-style="victorian"] .display { font-weight: 400; font-stretch: 100%; }
+
+/* ============================================================================
+   19 · GRAFFITI — sprayed, tagged, layered over
+   ========================================================================== */
+:root[data-style="graffiti"] {
+  --font-display: "Permanent Marker", Impact, sans-serif;
+  --sodium: #FF3D00;
+  --sodium-soft: #FF7A3D;
+  --trace: #00E676;
+  --r-card: 4px;
+  --hair: 3px;
+  --lift-hi: 5px 7px 0 var(--ink), 10px 12px 22px rgba(0, 0, 0, 0.5);
+  --grain-opacity: 0.2;
+  --track-label: 0.04em;
+  --style-tex: radial-gradient(currentColor 8%, transparent 9%);
+  --style-tex-size: 4px 4px;
+  --style-tex-op: 0.09;
+}
+
+/* ============================================================================
+   20 · AURORA — slow light across a dark sky
+   ========================================================================== */
+:root[data-style="aurora"] {
+  --trace: #6BF0C8;
+  --trace-soft: rgba(107, 240, 200, 0.2);
+  --sodium: #A78BFA;
+  --sodium-soft: #C7B2FF;
+  --sodium-glow: rgba(167, 139, 250, 0.22);
+  --r-card: 18px;
+  --hair: 1px;
+  --lift-hi: 0 0 0 1px var(--rule), 0 30px 80px -40px var(--sodium-glow);
+  --grain-opacity: 0.05;
+  --style-tex: radial-gradient(60% 40% at 15% 10%, rgba(107, 240, 200, 0.55), transparent 65%),
+               radial-gradient(55% 45% at 70% 5%, rgba(167, 139, 250, 0.5), transparent 65%),
+               radial-gradient(50% 40% at 45% 30%, rgba(90, 169, 255, 0.4), transparent 70%);
+  --style-tex-size: 220% 220%;
+  --style-tex-op: 0.5;
+  --style-tex-blend: screen;
+}
+:root[data-style="aurora"] body::before { animation: aurora-drift 26s var(--e-io) infinite alternate; }
+@keyframes aurora-drift {
+  from { background-position: 0% 0%,   100% 0%, 40% 20%; }
+  to   { background-position: 30% 18%,  60% 12%, 70% 0%; }
+}
+
+/* ============================================================================
+   21 · HANDWRITTEN — a notebook, not a document
+   ========================================================================== */
+:root[data-style="handwritten"] {
+  --font-display: "Caveat", "Comic Sans MS", cursive;
+  --font-body: "Caveat", "Comic Sans MS", cursive;
+  --r-card: 14px 26px 18px 22px;
+  --hair: 2px;
+  --lift: none;
+  --lift-hi: 2px 3px 0 var(--rule), 0 0 0 2px var(--rule-soft);
+  --track-label: 0.04em;
+  --t-body: clamp(1.1rem, 1.35vw, 1.3rem);
+  --lh-body: 1.5;
+  --grain-opacity: 0.07;
+  --style-tex: linear-gradient(transparent 95%, currentColor 95%);
+  --style-tex-size: 100% 30px;
+  --style-tex-op: 0.06;
+}
+
+/* ============================================================================
+   22 · LIQUID GLASS — thick refractive slabs with a specular edge
+   ========================================================================== */
+:root[data-style="liquid-glass"] {
+  --r-card: 28px;
+  --r-pill: 999px;
+  --hair: 1px;
+  --panel:   color-mix(in srgb, var(--void) 48%, transparent);
+  --panel-2: color-mix(in srgb, var(--void) 34%, transparent);
+  --panel-3: color-mix(in srgb, var(--ink) 10%, transparent);
+  --rule: color-mix(in srgb, var(--ink) 24%, transparent);
+  --lift: inset 0 1px 0 color-mix(in srgb, var(--ink) 40%, transparent),
+          inset 0 -18px 30px -22px color-mix(in srgb, var(--ink) 50%, transparent);
+  --lift-hi: inset 0 1.5px 0 color-mix(in srgb, var(--ink) 55%, transparent),
+             inset 0 -24px 40px -26px color-mix(in srgb, var(--ink) 60%, transparent),
+             0 24px 60px -30px rgba(0, 0, 0, 0.6);
+  --grain-opacity: 0;
+  --style-tex: linear-gradient(125deg, transparent 38%,
+               color-mix(in srgb, var(--ink) 60%, transparent) 47%,
+               transparent 56%);
+  --style-tex-size: 260% 260%;
+  --style-tex-op: 0.1;
+}
+:root[data-style="liquid-glass"] body::before { animation: glass-sweep 14s linear infinite; }
+@keyframes glass-sweep {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+/* ============================================================================
+   REDUCED MOTION
+   Styles may be ornamental; they may not be nauseating. Kill the ambient
+   loops and leave the static treatment, which carries the identity anyway.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-style="aurora"] body::before,
+  :root[data-style="liquid-glass"] body::before { animation: none; }
+  body::before { transition: none; }
+}
+
+/* Printing is a document, never a treatment. */
+@media print {
+  body::before { display: none; }
+  .styler { display: none; }
+}

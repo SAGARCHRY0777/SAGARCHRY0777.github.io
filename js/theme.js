@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------------
 
 import { $, reduced } from './utils.js';
+import { closeStyleMenu } from './style.js';
 
 const KEY = 'sc-theme';
 const listeners = new Set();
@@ -123,6 +124,7 @@ export function initTheme() {
 
     // closed = hidden from the tab order as well as from the eye
     const setOpen = (open) => {
+      if (open) closeStyleMenu();   // only one dropdown at a time — both hang right
       host.classList.toggle('is-open', open);
       trigger.setAttribute('aria-expanded', String(open));
       panel.hidden = !open;
