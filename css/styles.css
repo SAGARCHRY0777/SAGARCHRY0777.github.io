@@ -118,6 +118,15 @@ body::before {
 .styler__chip i { display: block; }
 
 /* ============================================================================
+   THE NAV IS LOAD-BEARING
+   A style may repaint the header but may not resize it. Nine links and four
+   controls already fill the bar, so the two tokens that widen text are pinned
+   back to their base values inside .nav only. The page body still gets the
+   style's full weight and tracking; the header just stays on one line.
+   ========================================================================== */
+:root[data-style] .nav { --track-label: 0.14em; --hair: 1px; }
+
+/* ============================================================================
    1 · MINIMALISM — remove until it breaks, then put one thing back
    ========================================================================== */
 :root[data-style="minimalism"] {
@@ -390,7 +399,8 @@ body::before {
    ========================================================================== */
 :root[data-style="surreal"] {
   --font-display: "Abril Fatface", Georgia, serif;
-  --r-card: 50% 8px 50% 8px;
+  --r-card: 6px 40px 6px 40px;   /* px, not %: % resolves against the box and
+                                    turns a wide panel into a clipping lens */
   --hair: 2px;
   --lift-hi: 0 30px 60px -20px var(--sodium-glow), 0 0 0 2px var(--rule);
   --grain-opacity: 0.08;
@@ -409,7 +419,7 @@ body::before {
   --sodium: #B5651D;
   --sodium-soft: #D9905A;
   --trace: #6E7F5C;
-  --r-card: 40% 8% 36% 10% / 12% 40% 10% 36%;
+  --r-card: 28px 6px 26px 8px;   /* thrown, not round — see the note above */
   --hair: 2px;
   --lift: none;
   --lift-hi: 0 0 0 2px var(--rule), 0 18px 40px -26px rgba(0, 0, 0, 0.6);

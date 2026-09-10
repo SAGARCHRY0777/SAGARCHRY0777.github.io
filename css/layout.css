@@ -141,8 +141,13 @@
   display: none;
   align-items: center;
   gap: var(--s-5);
+  min-width: 0;      /* a flex item will not shrink below content without this */
+  flex: 0 1 auto;
+  overflow: hidden;  /* last-resort clip, so overflow never reaches the tools */
 }
-@media (min-width: 1040px) { .nav__links { display: flex; } }
+/* 1180, not 1040: four tool buttons plus nine links need the extra room.
+   Below this the links live in the rail and the section index instead. */
+@media (min-width: 1180px) { .nav__links { display: flex; } }
 
 .nav__link {
   font-family: var(--font-mono);
@@ -176,7 +181,10 @@
   margin-right: 6px;
 }
 
-.nav__tools { display: flex; align-items: center; gap: var(--s-3); }
+/* The tools never compress: they are the controls, and a half-clipped Star
+   button is worse than a shorter link row. Anything that does not fit comes
+   out of .nav__links, which can shrink and is duplicated in the rail. */
+.nav__tools { display: flex; align-items: center; gap: var(--s-3); flex: none; }
 
 /* --- mobile subnav: horizontal scroll strip, hidden once the full links fit */
 .subnav {

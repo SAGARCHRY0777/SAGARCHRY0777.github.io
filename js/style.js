@@ -36,7 +36,7 @@ export const STYLES = [
   // --- structural: the style is in the grid and the restraint ---------------
   { id: 'minimalism',    name: 'Minimalism',    group: 'Structural', chip: ['#FFFFFF', '#111111'], font: null },
   { id: 'swiss',         name: 'Swiss',         group: 'Structural', chip: ['#FFFFFF', '#D8121C'], font: null },
-  { id: 'editorial',     name: 'Editorial',     group: 'Structural', chip: ['#FBFAF7', '#1A1A1A'], font: 'Playfair+Display:wght@500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500' },
+  { id: 'editorial',     name: 'Editorial',     group: 'Structural', chip: ['#FBFAF7', '#1A1A1A'], font: 'Playfair+Display:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500' },
   { id: 'vector-art',    name: 'Vector art',    group: 'Structural', chip: ['#FFD400', '#111111'], font: null },
 
   // --- surface: the style is in the material --------------------------------
@@ -114,6 +114,12 @@ function loadFont(spec) {
   document.head.appendChild(link);
 }
 
+/** The families inside a css2 spec, as CSS font-family names. */
+function familiesOf(spec) {
+  if (!spec) return [];
+  return spec.split('&family=').map((f) => f.split(':')[0].replace(/\+/g, ' '));
+}
+
 /**
  * Re-run the site's own measurement passes.
  *
@@ -123,14 +129,33 @@ function loadFont(spec) {
  * for resize, so the honest way to keep them correct is to tell them the
  * layout moved rather than to reach into each one.
  *
- * Deferred twice: once past the style's own paint, once more past the webfont
- * swap that follows a cold load.
+ * The timing is the whole difficulty, and `document.fonts.ready` is the wrong
+ * signal for it. It reports "no loads outstanding", which is TRUE in the gap
+ * between appending the <link> and the browser parsing it — so it resolves
+ * immediately, the refit measures the OLD face, and the new one swaps in
+ * afterwards against a size that was computed for different metrics. That is
+ * exactly how the fitted name ends up wider than the viewport.
+ *
+ * `document.fonts.load()` names the face instead of asking about the queue,
+ * and resolves when that face is usable. Timed passes stay as a backstop for
+ * a font that never arrives at all, matching the ones effects.js keeps for
+ * its own fit.
  */
-function remeasure() {
+function remeasure(spec) {
   const run = () => { refit(); window.dispatchEvent(new Event('resize')); };
   requestAnimationFrame(run);
-  if (document.fonts?.ready) document.fonts.ready.then(run).catch(() => {});
-  else setTimeout(run, 600);
+
+  const fams = familiesOf(spec);
+  if (fams.length && document.fonts?.load) {
+    Promise.all(
+      fams.map((f) => document.fonts.load(`400 100px "${f}"`).catch(() => {}))
+    ).then(run);
+  } else if (document.fonts?.ready) {
+    document.fonts.ready.then(run).catch(() => {});
+  }
+
+  setTimeout(run, 600);
+  setTimeout(run, 1800);
 }
 
 function stamp(id) {
@@ -145,7 +170,7 @@ function stamp(id) {
     b.classList.toggle('is-on', on);
     b.setAttribute('aria-checked', String(on));
   });
-  remeasure();
+  remeasure(STYLES.find((s) => s.id === id)?.font);
 }
 
 // One view transition owns one snapshot of the root, so overlapping swaps
