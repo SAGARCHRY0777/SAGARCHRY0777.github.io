@@ -118,6 +118,52 @@ body::before {
 .styler__chip i { display: block; }
 
 /* ============================================================================
+   THE 60 / 30 / 10 SYSTEM, AND TINTED DEPTH
+
+   Every style below is built on the same two rules, so they read as one family
+   however far apart they look.
+
+   SIXTY  --tone    the ground. The colour you see most of, and the one a
+                    visitor would name if asked what colour the page is.
+   THIRTY --carry   the surfaces that sit on it: panels, rules, fills. Its job
+                    is to separate things from the ground without competing.
+   TEN    --pop     the accent. Ten percent is a ceiling, not a target. It
+                    belongs on the one thing per view that must be found first
+                    -- which is why no style paints an accent ring on every
+                    panel, however loud the style is otherwise.
+
+   DEPTH IS THE GROUND TAKEN DOWN, NEVER BLACK.
+   A shadow is the absence of light on a surface, so it keeps that surface's
+   hue. Black shadows are the single fastest way to make a warm palette look
+   dirty and a cool one look muddy -- the grey reads as a smudge rather than as
+   a shadow. Every shadow below is therefore mixed from --tone toward near-black
+   rather than written as rgba(0,0,0,x), so a warm style casts a warm shadow and
+   a cold one casts a cold shadow, automatically, in all 13 palettes.
+
+   The mirror of that is --sheen: the lit edge of an extrusion, mixed from
+   --tone toward white, so highlights carry the hue too.
+   ========================================================================== */
+:root[data-style] {
+  --tone:  var(--void);
+  --carry: var(--panel-2);
+  --pop:   var(--sodium);
+
+  /* the dark version of THIS style's own colour */
+  --shade: color-mix(in srgb, var(--tone) 52%, #04060A);
+
+  --sh-1: 0 1px 3px         color-mix(in srgb, var(--shade) 34%, transparent);
+  --sh-2: 0 10px 24px -10px color-mix(in srgb, var(--shade) 55%, transparent);
+  --sh-3: 0 28px 64px -28px color-mix(in srgb, var(--shade) 74%, transparent);
+
+  /* hard, offset, no blur — what the flat styles cast instead of a gradient */
+  --sh-flat: color-mix(in srgb, var(--shade) 88%, transparent);
+
+  /* the lit edge, tinted the same way */
+  --sheen:      color-mix(in srgb, var(--tone) 16%, #FFFFFF);
+  --sheen-soft: color-mix(in srgb, var(--tone) 62%, #FFFFFF);
+}
+
+/* ============================================================================
    THE NAV IS LOAD-BEARING
    A style may repaint the header but may not resize it. Nine links and four
    controls already fill the bar, so the two tokens that widen text are pinned
@@ -146,8 +192,7 @@ body::before {
   --font-display: "Bungee", "Archivo", Impact, sans-serif;
   --r-card: 20px;
   --hair: 3px;
-  --lift-hi: 0 0 0 3px var(--sodium), 10px 10px 0 0 var(--trace),
-             0 30px 70px -30px rgba(0, 0, 0, 0.9);
+  --lift-hi: 0 0 0 1px var(--pop), 10px 10px 0 0 var(--carry), var(--sh-3);
   --track-label: 0.24em;
   --grain-opacity: 0.09;
   --style-tex: repeating-linear-gradient(45deg, currentColor 0 2px, transparent 2px 12px);
@@ -177,7 +222,7 @@ body::before {
   --r-card: 0px;
   --hair: 2.5px;
   --lift: none;
-  --lift-hi: 6px 6px 0 0 var(--ink);
+  --lift-hi: 6px 6px 0 0 var(--sh-flat);
   --grain-opacity: 0;
   --track-label: 0.1em;
 }
@@ -190,7 +235,7 @@ body::before {
   --font-display: "Alfa Slab One", Georgia, serif;
   --r-card: 0px;
   --hair: 2px;
-  --lift-hi: 5px 6px 0 rgba(0, 0, 0, 0.35), -3px -4px 0 var(--trace-soft);
+  --lift-hi: 5px 6px 0 var(--sh-flat), -3px -4px 0 var(--trace-soft);
   --grain-opacity: 0.14;
   --style-tex: repeating-linear-gradient(112deg, transparent 0 22px, currentColor 22px 23px);
   --style-tex-op: 0.05;
@@ -226,7 +271,7 @@ body::before {
   --r-card: 0px;
   --hair: 4px;
   --lift: none;
-  --lift-hi: 8px 8px 0 0 var(--ink);
+  --lift-hi: 8px 8px 0 0 var(--sh-flat);
   --track-label: 0.12em;
   --grain-opacity: 0;
   --style-tex: radial-gradient(currentColor 22%, transparent 23%);
@@ -270,7 +315,7 @@ body::before {
   --rule: color-mix(in srgb, var(--ink) 18%, transparent);
   --lift: inset 0 1px 0 color-mix(in srgb, var(--ink) 22%, transparent);
   --lift-hi: inset 0 1px 0 color-mix(in srgb, var(--ink) 28%, transparent),
-             0 20px 60px -30px rgba(0, 0, 0, 0.7);
+             var(--sh-3);
   --grain-opacity: 0.02;
   --style-tex: radial-gradient(60% 50% at 20% 0%, var(--sodium-glow), transparent 70%),
                radial-gradient(50% 45% at 85% 30%, var(--trace-soft), transparent 70%);
@@ -294,8 +339,11 @@ body::before {
   --ink-faint: #A2A7B1;
   --r-card: 22px;
   --hair: 0px;
-  --lift:    6px 6px 14px #C9CBD1, -6px -6px 14px #FFFFFF;
-  --lift-hi: 9px 9px 20px #C6C8CE, -9px -9px 20px #FFFFFF;
+  --tone: #E5E6EA;
+  --lift:    6px 6px 14px color-mix(in srgb, var(--tone) 86%, #000),
+             -6px -6px 14px var(--sheen);
+  --lift-hi: 9px 9px 20px color-mix(in srgb, var(--tone) 80%, #000),
+             -9px -9px 20px var(--sheen);
   --grain-opacity: 0;
   color-scheme: light;
 }
@@ -309,12 +357,12 @@ body::before {
   --r-card: 30px;
   --r-pill: 999px;
   --hair: 0px;
-  --lift: inset 4px 4px 10px rgba(255, 255, 255, 0.16),
-          inset -5px -5px 12px rgba(0, 0, 0, 0.22),
-          0 12px 22px -12px rgba(0, 0, 0, 0.5);
-  --lift-hi: inset 5px 5px 12px rgba(255, 255, 255, 0.2),
-             inset -6px -6px 14px rgba(0, 0, 0, 0.26),
-             0 22px 40px -18px rgba(0, 0, 0, 0.55);
+  --lift: inset 4px 4px 10px color-mix(in srgb, var(--sheen) 26%, transparent),
+          inset -5px -5px 12px color-mix(in srgb, var(--shade) 40%, transparent),
+          var(--sh-2);
+  --lift-hi: inset 5px 5px 12px color-mix(in srgb, var(--sheen) 32%, transparent),
+             inset -6px -6px 14px color-mix(in srgb, var(--shade) 48%, transparent),
+             var(--sh-3);
   --grain-opacity: 0;
   --track-label: 0.1em;
 }
@@ -329,7 +377,7 @@ body::before {
   --r-pill: 0px;
   --hair: 3px;
   --lift: none;
-  --lift-hi: 6px 6px 0 0 var(--ink), 12px 12px 0 0 var(--rule);
+  --lift-hi: 6px 6px 0 0 var(--sh-flat), 12px 12px 0 0 var(--carry);
   --track-label: 0.06em;
   --grain-opacity: 0;
   --style-tex: repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 8px),
@@ -366,11 +414,12 @@ body::before {
   --r-card: 26px;
   --r-pill: 999px;
   --hair: 2px;
-  --lift: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 8px rgba(0, 0, 0, 0.25);
-  --lift-hi: inset 0 2px 0 rgba(255, 255, 255, 0.65),
-             0 0 0 2px var(--trace-soft), 0 18px 40px -22px var(--trace);
+  --lift: inset 0 2px 0 color-mix(in srgb, var(--sheen) 70%, transparent),
+          inset 0 -3px 8px color-mix(in srgb, var(--shade) 42%, transparent);
+  --lift-hi: inset 0 2px 0 color-mix(in srgb, var(--sheen) 80%, transparent),
+             0 0 0 1px var(--trace-soft), var(--sh-3);
   --track-label: 0.2em;
-  --style-tex: linear-gradient(160deg, rgba(255, 255, 255, 0.5) 0%, transparent 30%,
+  --style-tex: linear-gradient(160deg, color-mix(in srgb, var(--sheen) 62%, transparent) 0%, transparent 30%,
                transparent 70%, rgba(255, 100, 200, 0.4) 100%);
   --style-tex-op: 0.18;
 }
@@ -422,7 +471,7 @@ body::before {
   --r-card: 28px 6px 26px 8px;   /* thrown, not round — see the note above */
   --hair: 2px;
   --lift: none;
-  --lift-hi: 0 0 0 2px var(--rule), 0 18px 40px -26px rgba(0, 0, 0, 0.6);
+  --lift-hi: 0 0 0 2px var(--rule), var(--sh-3);
   --grain-opacity: 0.16;
   --lh-body: 1.75;
   --style-tex: repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 7px),
@@ -462,7 +511,7 @@ body::before {
   --trace: #00E676;
   --r-card: 4px;
   --hair: 3px;
-  --lift-hi: 5px 7px 0 var(--ink), 10px 12px 22px rgba(0, 0, 0, 0.5);
+  --lift-hi: 5px 7px 0 var(--sh-flat), var(--sh-2);
   --grain-opacity: 0.2;
   --track-label: 0.04em;
   --style-tex: radial-gradient(currentColor 8%, transparent 9%);
@@ -530,7 +579,7 @@ body::before {
           inset 0 -18px 30px -22px color-mix(in srgb, var(--ink) 50%, transparent);
   --lift-hi: inset 0 1.5px 0 color-mix(in srgb, var(--ink) 55%, transparent),
              inset 0 -24px 40px -26px color-mix(in srgb, var(--ink) 60%, transparent),
-             0 24px 60px -30px rgba(0, 0, 0, 0.6);
+             var(--sh-3);
   --grain-opacity: 0;
   --style-tex: linear-gradient(125deg, transparent 38%,
                color-mix(in srgb, var(--ink) 60%, transparent) 47%,
