@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# Only the robots.txt at the host root is read by crawlers, so every sitemap
+# on this host has to be listed here - the per-handbook robots.txt files served
+# under /<handbook>/ are never fetched. Search Console submission covers Google;
+# this is what makes the handbooks discoverable to everything else.
 Sitemap: https://sagarchry0777.github.io/sitemap.xml
+Sitemap: https://sagarchry0777.github.io/llm-handbook/sitemap.xml
+Sitemap: https://sagarchry0777.github.io/dsa-handbook/sitemap.xml
+Sitemap: https://sagarchry0777.github.io/system-design-handbook/sitemap.xml
+Sitemap: https://sagarchry0777.github.io/git-handbook/sitemap.xml
