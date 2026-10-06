@@ -4,7 +4,7 @@ Personal site for **Sagar Chaudhary** — AI engineer, industrial / IT-OT system
 **Live:** <https://sagarchry0777.github.io>
 
 Hand-written HTML, CSS and vanilla JavaScript. **No framework, no bundler, no
-`node_modules`, no build step.** Clone it, serve it, ship it.
+`node_modules`, nothing to compile.** Clone it, serve it, ship it.
 
 ---
 
@@ -68,6 +68,14 @@ GitHub Pages straight from `main` at the repository root.
 ├── assets/
 │   ├── img/                   portrait, og.png, favicon.svg
 │   └── docs/                  6 resume variants (PDF)
+├── scripts/                   not served; tooling only
+│   ├── generate_data.py       profile.json -> js/data.js
+│   ├── smoke_test.mjs         scores two JDs, runs six retrieval queries
+│   ├── fft_test.mjs           the spectrum analyser's maths
+│   ├── archive_test.mjs       swinging-door compression bounds
+│   ├── score_jd.mjs           JD scoring from the command line
+│   ├── build_artifact.py      inlines everything into dist/standalone.html
+│   └── build_assets.py        portrait + resume PDFs
 ├── robots.txt  sitemap.xml  site.webmanifest
 └── LICENSE
 ```
@@ -83,14 +91,33 @@ python -m http.server 5173
 # then open http://localhost:5173
 ```
 
-That is the whole toolchain. There is nothing to install and nothing to build.
+That is the whole toolchain for *serving* it. The page itself is not compiled;
+`scripts/` only regenerates data and runs the logic tests.
 
 ## Change a fact
 
 **Never edit `js/data.js` by hand.** It is generated from a profile dataset that
 lives outside this repository, alongside the resume builder — so the site and
-the resume variants cannot drift apart. Regenerate it there, then commit the
-resulting `js/data.js` here.
+the resume variants cannot drift apart.
+
+```bash
+python scripts/generate_data.py          # writes js/data.js
+JOBHUNT=/path/to/JobHunt python scripts/generate_data.py   # if it lives elsewhere
+```
+
+`JOBHUNT` defaults to `G:/My Drive/JobHunt`. The generator is the only thing
+that reads it; everything else in this repo is self-contained.
+
+## Test the logic
+
+The matcher, the retriever and the two instrument algorithms are pure
+functions, so they run without a browser:
+
+```bash
+node scripts/smoke_test.mjs      # JD scoring + retrieval, incl. an out-of-scope query
+node scripts/fft_test.mjs        # spectrum analyser
+node scripts/archive_test.mjs    # swinging-door compression
+```
 
 ## Change the look
 
@@ -144,7 +171,7 @@ presentational:
 ## Deploy
 
 **GitHub Pages** — push to `main`. Settings → Pages → deploy from `main` / root.
-There is no build step and no CI, because there is nothing to compile.
+No build step and no CI, because the published files are the source files.
 
 If the site ever moves to a custom domain, update `sitemap.xml` and the
 `og:image` URL in `index.html` — both currently point at
