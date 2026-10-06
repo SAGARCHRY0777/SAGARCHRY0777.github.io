@@ -68,6 +68,7 @@ GitHub Pages straight from `main` at the repository root.
 ├── assets/
 │   ├── img/                   portrait, og.png, favicon.svg
 │   └── docs/                  6 resume variants (PDF)
+├── START_SITE.bat             local preview on :5173
 ├── scripts/                   not served; tooling only
 │   ├── generate_data.py       profile.json -> js/data.js
 │   ├── smoke_test.mjs         scores two JDs, runs six retrieval queries
@@ -90,6 +91,8 @@ ES modules need a server — opening `index.html` over `file://` will not work.
 python -m http.server 5173
 # then open http://localhost:5173
 ```
+
+or double-click **`START_SITE.bat`**, which does both.
 
 That is the whole toolchain for *serving* it. The page itself is not compiled;
 `scripts/` only regenerates data and runs the logic tests.
