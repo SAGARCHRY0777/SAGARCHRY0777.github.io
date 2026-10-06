@@ -11,6 +11,8 @@ import { $, $$, escapeHtml, pad } from './utils.js';
 const ORDER = [
   'Engine Test-Bed',
   'Inferno',
+  'RAG Visualizer',
+  'System Design Lab',
   '3D Object Detection',
   'Foot Monitoring',
   'Distributed Multi-Sensor',

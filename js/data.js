@@ -13,7 +13,8 @@ export const DATA = {
     "linkedin": "https://www.linkedin.com/in/sagar-chaudhary777/",
     "github": "https://github.com/SAGARCHRY0777",
     "inferno_repo": "https://github.com/SAGARCHRY0777/inferno",
-    "inferno_demo": "https://inferno-ny28.onrender.com/"
+    "inferno_demo": "https://inferno-ny28.onrender.com/",
+    "website": "https://sagarchry0777.github.io"
   },
   "headline": "AI Engineer | Industrial & Manufacturing AI | GenAI, RAG & Agentic Systems | MLOps",
   "availability": {
@@ -548,6 +549,14 @@ export const DATA = {
           "w": 10
         },
         {
+          "t": "Built an LLM/RAG evaluation harness for the platform - a frozen 50-item golden set across seven buckets (including paraphrase and unanswerable traps), unit-tested Hit@k/MRR/groundedness scorers, a committed baseline, and a CI gate with a paired significance test that fails the build on retrieval regression.",
+          "tags": [
+            "genai",
+            "mlops"
+          ],
+          "w": 9
+        },
+        {
           "t": "Implemented dynamic request batching (size-or-timeout window) that amortizes per-call model overhead and keeps the GPU/CPU saturated - raising throughput under load while capping tail latency at the batch-wait window, with no manual tuning.",
           "tags": [
             "mlops",
@@ -596,6 +605,129 @@ export const DATA = {
         {
           "text": "GitHub",
           "url": "https://github.com/SAGARCHRY0777/inferno"
+        }
+      ]
+    },
+    {
+      "name": "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "qualifier": "",
+      "org": "Independent",
+      "role": "Personal system",
+      "dates": "",
+      "kind": "personal",
+      "tags": [
+        "genai",
+        "ml"
+      ],
+      "stack": [
+        "React 18",
+        "Vite",
+        "JavaScript",
+        "BM25",
+        "ColBERT MaxSim",
+        "cross-encoder reranking",
+        "Reciprocal Rank Fusion",
+        "GitHub Actions"
+      ],
+      "points": [
+        {
+          "t": "Built an interactive playground for the two stages that decide whether a RAG pipeline works - how documents are chunked, and how the right passages are found - with every score recomputed live from text the visitor pastes in.",
+          "tags": [
+            "genai"
+          ],
+          "w": 10
+        },
+        {
+          "t": "Hand-implemented the retrieval maths rather than calling a library: BM25, bi-encoder cosine similarity, ColBERT late-interaction MaxSim, a cross-encoder scorer and Reciprocal Rank Fusion, covered by 12 unit tests.",
+          "tags": [
+            "genai",
+            "ml"
+          ],
+          "w": 10
+        },
+        {
+          "t": "Ships with no backend and no network calls - embeddings, scores and rankings are all computed in the browser, so the tool works offline and nothing a visitor types ever leaves their machine.",
+          "tags": [
+            "genai"
+          ],
+          "w": 8
+        },
+        {
+          "t": "Eight visualisations across four chunking strategies and four retrieval methods, each deep-linkable, in a 63 kB gzipped bundle with lint, unit tests and build gated in CI.",
+          "tags": [
+            "genai"
+          ],
+          "w": 7
+        }
+      ],
+      "links": [
+        {
+          "text": "Live Demo",
+          "url": "https://sagarchry0777.github.io/rag-visualizer/"
+        },
+        {
+          "text": "GitHub",
+          "url": "https://github.com/SAGARCHRY0777/rag-visualizer"
+        }
+      ]
+    },
+    {
+      "name": "System Design Lab - A CI-Validated Distributed Systems Reference",
+      "qualifier": "",
+      "org": "Independent",
+      "role": "Personal system",
+      "dates": "",
+      "kind": "personal",
+      "tags": [
+        "backend",
+        "mlops"
+      ],
+      "stack": [
+        "Python",
+        "Mermaid",
+        "JSON scene files",
+        "SVG rendering",
+        "GitHub Actions"
+      ],
+      "points": [
+        {
+          "t": "Wrote a 123-page distributed-systems reference across 21 sections - load balancing, caching, replication, messaging, reliability, observability - built around when NOT to use a technique and what it costs.",
+          "tags": [
+            "backend"
+          ],
+          "w": 10
+        },
+        {
+          "t": "Treated the documentation as a build: diagrams are authored once as JSON scene files and rendered to committed SVG, so a diagram can never silently drift from the design it describes.",
+          "tags": [
+            "backend",
+            "mlops"
+          ],
+          "w": 9
+        },
+        {
+          "t": "Gated every push with eight CI validators - relative-link resolution across 119 files, scene-schema validation, parse checks on 325 Mermaid diagrams, and drift checks on four generated documents.",
+          "tags": [
+            "mlops"
+          ],
+          "w": 9
+        },
+        {
+          "t": "Backed the theory with runnable implementations - circuit breaker, consistent hashing, LRU cache and rate limiter - so each pattern has working code next to the explanation.",
+          "tags": [
+            "backend"
+          ],
+          "w": 7
+        }
+      ],
+      "links": [
+        {
+          "text": "Live Site",
+          "url": "https://sagarchry0777.github.io/system-design-lab/"
+        },
+        {
+          "text": "GitHub",
+          "url": "https://github.com/SAGARCHRY0777/system-design-lab"
         }
       ]
     },
@@ -705,7 +837,10 @@ export const DATA = {
         "LLM & embedding APIs (OpenAI",
         "Gemini",
         "Ollama",
-        "Nomic)"
+        "Nomic)",
+        "LLM/RAG evaluation (golden sets",
+        "frozen baselines",
+        "CI regression gates)"
       ]
     },
     {
@@ -1188,6 +1323,15 @@ export const DATA = {
       ]
     },
     {
+      "t": "Built an LLM/RAG evaluation harness for the platform - a frozen 50-item golden set across seven buckets (including paraphrase and unanswerable traps), unit-tested Hit@k/MRR/groundedness scorers, a committed baseline, and a CI gate with a paired significance test that fails the build on retrieval regression.",
+      "src": "Inferno - Distributed ML Inference & Agentic AI Platform",
+      "tags": [
+        "backend",
+        "genai",
+        "mlops"
+      ]
+    },
+    {
       "t": "Implemented dynamic request batching (size-or-timeout window) that amortizes per-call model overhead and keeps the GPU/CPU saturated - raising throughput under load while capping tail latency at the batch-wait window, with no manual tuning.",
       "src": "Inferno - Distributed ML Inference & Agentic AI Platform",
       "tags": [
@@ -1230,6 +1374,70 @@ export const DATA = {
         "backend",
         "cv",
         "genai",
+        "mlops"
+      ]
+    },
+    {
+      "t": "Built an interactive playground for the two stages that decide whether a RAG pipeline works - how documents are chunked, and how the right passages are found - with every score recomputed live from text the visitor pastes in.",
+      "src": "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "tags": [
+        "genai",
+        "ml"
+      ]
+    },
+    {
+      "t": "Hand-implemented the retrieval maths rather than calling a library: BM25, bi-encoder cosine similarity, ColBERT late-interaction MaxSim, a cross-encoder scorer and Reciprocal Rank Fusion, covered by 12 unit tests.",
+      "src": "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "tags": [
+        "genai",
+        "ml"
+      ]
+    },
+    {
+      "t": "Ships with no backend and no network calls - embeddings, scores and rankings are all computed in the browser, so the tool works offline and nothing a visitor types ever leaves their machine.",
+      "src": "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "tags": [
+        "genai",
+        "ml"
+      ]
+    },
+    {
+      "t": "Eight visualisations across four chunking strategies and four retrieval methods, each deep-linkable, in a 63 kB gzipped bundle with lint, unit tests and build gated in CI.",
+      "src": "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "tags": [
+        "genai",
+        "ml"
+      ]
+    },
+    {
+      "t": "Wrote a 123-page distributed-systems reference across 21 sections - load balancing, caching, replication, messaging, reliability, observability - built around when NOT to use a technique and what it costs.",
+      "src": "System Design Lab - A CI-Validated Distributed Systems Reference",
+      "tags": [
+        "backend",
+        "mlops"
+      ]
+    },
+    {
+      "t": "Treated the documentation as a build: diagrams are authored once as JSON scene files and rendered to committed SVG, so a diagram can never silently drift from the design it describes.",
+      "src": "System Design Lab - A CI-Validated Distributed Systems Reference",
+      "tags": [
+        "backend",
+        "mlops"
+      ]
+    },
+    {
+      "t": "Gated every push with eight CI validators - relative-link resolution across 119 files, scene-schema validation, parse checks on 325 Mermaid diagrams, and drift checks on four generated documents.",
+      "src": "System Design Lab - A CI-Validated Distributed Systems Reference",
+      "tags": [
+        "backend",
+        "mlops"
+      ]
+    },
+    {
+      "t": "Backed the theory with runnable implementations - circuit breaker, consistent hashing, LRU cache and rate limiter - so each pattern has working code next to the explanation.",
+      "src": "System Design Lab - A CI-Validated Distributed Systems Reference",
+      "tags": [
+        "backend",
         "mlops"
       ]
     },
@@ -1473,6 +1681,15 @@ export const DATA = {
     "nomic)": [
       "Generative AI & Agentic"
     ],
+    "llm/rag evaluation (golden sets": [
+      "Generative AI & Agentic"
+    ],
+    "frozen baselines": [
+      "Generative AI & Agentic"
+    ],
+    "ci regression gates)": [
+      "Generative AI & Agentic"
+    ],
     "classification": [
       "Machine Learning"
     ],
@@ -1619,6 +1836,7 @@ export const DATA = {
       "Foot Monitoring System (ADAS)",
       "Sales Trend Analysis & Time-Series Forecasting",
       "Inferno - Distributed ML Inference & Agentic AI Platform",
+      "System Design Lab - A CI-Validated Distributed Systems Reference",
       "Disaster Tweet Classification",
       "Customer Churn Prediction"
     ],
@@ -1805,7 +2023,39 @@ export const DATA = {
       "Inferno - Distributed ML Inference & Agentic AI Platform"
     ],
     "github actions": [
-      "Inferno - Distributed ML Inference & Agentic AI Platform"
+      "Inferno - Distributed ML Inference & Agentic AI Platform",
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser",
+      "System Design Lab - A CI-Validated Distributed Systems Reference"
+    ],
+    "react 18": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "vite": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "javascript": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "bm25": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "colbert maxsim": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "cross-encoder reranking": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "reciprocal rank fusion": [
+      "RAG Visualizer - Retrieval Internals, Computed Live in the Browser"
+    ],
+    "mermaid": [
+      "System Design Lab - A CI-Validated Distributed Systems Reference"
+    ],
+    "json scene files": [
+      "System Design Lab - A CI-Validated Distributed Systems Reference"
+    ],
+    "svg rendering": [
+      "System Design Lab - A CI-Validated Distributed Systems Reference"
     ],
     "nltk": [
       "Disaster Tweet Classification"
@@ -1856,7 +2106,7 @@ export const DATA = {
       "Inferno - Distributed ML Inference & Agentic AI Platform"
     ],
     "observability": [
-      "positioning · master"
+      "System Design Lab - A CI-Validated Distributed Systems Reference"
     ],
     "chunking": [
       "Real-Time Engine Test-Bed Monitoring & Telemetry Platform"
