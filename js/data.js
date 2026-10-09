@@ -600,7 +600,7 @@ export const DATA = {
       "links": [
         {
           "text": "Live Demo",
-          "url": "https://inferno-ny28.onrender.com/"
+          "url": "https://sagarchry0777.github.io/demo/inferno/"
         },
         {
           "text": "GitHub",
@@ -728,6 +728,82 @@ export const DATA = {
         {
           "text": "GitHub",
           "url": "https://github.com/SAGARCHRY0777/system-design-lab"
+        }
+      ]
+    },
+    {
+      "name": "Four Technical Handbooks - 136 Pages With an Executable Layer",
+      "qualifier": "",
+      "org": "Independent",
+      "role": "Personal system",
+      "dates": "",
+      "kind": "personal",
+      "tags": [
+        "genai",
+        "backend",
+        "mlops"
+      ],
+      "stack": [
+        "Markdown",
+        "Node.js",
+        "Vanilla JS",
+        "Puppeteer",
+        "GitHub Actions",
+        "GitHub Pages"
+      ],
+      "points": [
+        {
+          "t": "Wrote and shipped four handbooks from one build - LLM systems (47 pages), DSA (41), system design (41) and git (7) - each topic written at three depths and from the seats that have to live with the decision, not just the engineer who picks it.",
+          "tags": [
+            "genai",
+            "backend"
+          ],
+          "w": 10
+        },
+        {
+          "t": "Gave every page an executable layer rather than a diagram: 136 simulations that step a mechanism forward in time, and 42 in-browser labs that run the real algorithm on text you paste - BPE merges, BM25 scoring, Cohen's kappa, M/M/1 queueing, speculative-decoding draft length.",
+          "tags": [
+            "genai",
+            "ml"
+          ],
+          "w": 10
+        },
+        {
+          "t": "Gated the interactive layer in CI, because a build that renders is not a build that works: every simulation is stepped through all its frames in a headless browser and every lab's controls are moved and asserted to change the output, so a dead control fails the build instead of reaching a reader.",
+          "tags": [
+            "mlops"
+          ],
+          "w": 9
+        },
+        {
+          "t": "Pinned the arithmetic too - 139 facts across all 42 labs, each expected value recomputed independently in the test rather than copied from the page, which caught a reasoning-budget lab whose metric always advised spending less and a roofline lab computing for a GPU that does not exist.",
+          "tags": [
+            "mlops",
+            "ml"
+          ],
+          "w": 9
+        }
+      ],
+      "links": [
+        {
+          "text": "LLM Handbook",
+          "url": "https://sagarchry0777.github.io/llm-handbook/"
+        },
+        {
+          "text": "DSA Handbook",
+          "url": "https://sagarchry0777.github.io/dsa-handbook/"
+        },
+        {
+          "text": "System Design Handbook",
+          "url": "https://sagarchry0777.github.io/system-design-handbook/"
+        },
+        {
+          "text": "Git Handbook",
+          "url": "https://sagarchry0777.github.io/git-handbook/"
+        },
+        {
+          "text": "GitHub",
+          "url": "https://github.com/SAGARCHRY0777/llm-handbook"
         }
       ]
     },
